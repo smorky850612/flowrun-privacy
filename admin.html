@@ -53,8 +53,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0f1923;
 
 <div id="loginScreen" class="login-box">
   <h3 style="margin-bottom:16px;color:#fff">관리자 로그인</h3>
-  <input type="password" id="adminPw" placeholder="관리자 비밀번호" autocomplete="off">
-  <button onclick="adminLogin()">로그인</button>
+  <input type="email" id="emailInput" placeholder="이메일" autocomplete="email" style="margin-bottom:4px">
+  <input type="password" id="adminPw" placeholder="비밀번호" autocomplete="current-password">
+  <button id="loginBtn">로그인</button>
   <p id="loginError" style="color:#d63031;font-size:12px;margin-top:8px;display:none"></p>
 </div>
 
