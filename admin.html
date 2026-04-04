@@ -6,233 +6,170 @@
 <title>FlowRun Admin</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0f1923;color:#e0e0e0;min-height:100vh}
-.header{background:linear-gradient(135deg,#1a2744,#0f1923);padding:20px;text-align:center;border-bottom:1px solid rgba(108,92,231,0.3)}
-.header h1{font-size:20px;background:linear-gradient(135deg,#6C5CE7,#0984E3);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.header p{color:#888;font-size:12px;margin-top:4px}
-.login-box{max-width:360px;margin:60px auto;padding:24px;background:#1a2744;border-radius:12px;text-align:center}
-.login-box input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #333;background:#0f1923;color:#fff;font-size:14px}
-.login-box button{width:100%;padding:12px;margin-top:12px;border:none;border-radius:8px;background:linear-gradient(135deg,#6C5CE7,#0984E3);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
-.login-box button:hover{opacity:0.9}
-.container{max-width:600px;margin:0 auto;padding:16px}
-.section{margin:16px 0}
-.section-title{font-size:14px;color:#6C5CE7;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.section-title .count{background:rgba(108,92,231,0.2);color:#a29bfe;padding:2px 8px;border-radius:10px;font-size:12px}
-.card{background:#1a2744;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.05)}
-.card .email{font-size:14px;font-weight:600;color:#fff}
-.card .date{font-size:11px;color:#666;margin-top:2px}
-.card .uid{font-size:10px;color:#444;margin-top:2px;font-family:monospace}
-.card .actions{margin-top:10px;display:flex;gap:8px}
-.btn{padding:8px 20px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s}
-.btn-approve{background:#00b894;color:#fff}
-.btn-approve:hover{background:#00a381}
-.btn-reject{background:#d63031;color:#fff}
-.btn-reject:hover{background:#b71c1c}
-.btn-revoke{background:#636e72;color:#fff;padding:6px 14px;font-size:11px}
-.btn-revoke:hover{background:#535c60}
-.status-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
-.status-approved{background:rgba(0,184,148,0.15);color:#00b894}
-.status-pending{background:rgba(253,203,110,0.15);color:#fdcb6e}
-.status-rejected{background:rgba(214,48,49,0.15);color:#d63031}
-.empty{text-align:center;color:#555;padding:30px;font-size:13px}
-.refresh-btn{background:none;border:1px solid #333;color:#888;padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;float:right}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0e1a;color:#e0e0e0;min-height:100vh}
+.login-wrap{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.login-box{background:#1a1f35;border-radius:16px;padding:32px;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.login-box h1{font-size:24px;text-align:center;margin-bottom:24px;background:linear-gradient(135deg,#6C5CE7,#0984E3);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:12px;color:#8888aa;margin-bottom:6px}
+.input-group input{width:100%;padding:12px;border:1px solid #2a2f45;border-radius:8px;background:#0d1117;color:#fff;font-size:14px;outline:none}
+.input-group input:focus{border-color:#6C5CE7}
+.btn{width:100%;padding:12px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.btn-primary{background:linear-gradient(135deg,#6C5CE7,#0984E3);color:#fff}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-logout{background:#2a2f45;color:#aaa;margin-top:12px;font-size:13px}
+.error{color:#ff6b6b;font-size:12px;margin-top:8px;text-align:center;display:none}
+.admin-wrap{max-width:480px;margin:0 auto;padding:16px}
+.admin-header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #1e2340}
+.admin-header h1{font-size:20px;background:linear-gradient(135deg,#6C5CE7,#0984E3);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.stat-card{background:#1a1f35;border-radius:12px;padding:14px;text-align:center}
+.stat-num{font-size:24px;font-weight:700;color:#6C5CE7}
+.stat-label{font-size:11px;color:#6c6c80;margin-top:4px}
+.tab-bar{display:flex;gap:4px;margin:16px 0 12px;background:#1a1f35;border-radius:8px;padding:4px}
+.tab{flex:1;padding:8px;text-align:center;border-radius:6px;font-size:13px;cursor:pointer;color:#6c6c80;transition:all 0.2s}
+.tab.active{background:#6C5CE7;color:#fff}
+.user-card{background:#1a1f35;border-radius:12px;padding:14px;margin-bottom:8px}
+.user-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.user-email{font-size:13px;font-weight:600;color:#e0e0e0;word-break:break-all}
+.user-date{font-size:11px;color:#6c6c80}
+.user-status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.status-pending{background:#ff922b22;color:#ff922b}
+.status-approved{background:#51cf6622;color:#51cf66}
+.status-rejected{background:#ff6b6b22;color:#ff6b6b}
+.action-btns{display:flex;gap:6px;margin-top:10px}
+.action-btns button{flex:1;padding:8px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-approve{background:#51cf6622;color:#51cf66}
+.btn-approve:hover{background:#51cf6644}
+.btn-reject{background:#ff6b6b22;color:#ff6b6b}
+.btn-reject:hover{background:#ff6b6b44}
+.btn-revoke{background:#ff922b22;color:#ff922b}
+.btn-revoke:hover{background:#ff922b44}
+.empty{text-align:center;color:#6c6c80;padding:40px;font-size:14px}
+.loading{text-align:center;padding:40px;color:#6c6c80}
+.refresh-btn{background:none;border:1px solid #2a2f45;color:#6c6c80;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer}
 .refresh-btn:hover{border-color:#6C5CE7;color:#6C5CE7}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#00b894;color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;display:none;z-index:999}
-.stats{display:flex;gap:12px;margin:16px 0}
-.stat-box{flex:1;background:#1a2744;border-radius:10px;padding:14px;text-align:center}
-.stat-num{font-size:24px;font-weight:700;color:#fff}
-.stat-label{font-size:11px;color:#888;margin-top:4px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1f35;color:#fff;padding:12px 24px;border-radius:8px;font-size:13px;display:none;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
 </style>
 </head>
 <body>
-
-<div class="header">
-  <h1>FlowRun Admin Panel</h1>
-  <p>사용자 승인 관리</p>
+<div id="loginScreen" class="login-wrap">
+<div class="login-box">
+<h1>FlowRun Admin</h1>
+<div class="input-group">
+<label>이메일</label>
+<input type="email" id="emailInput" placeholder="admin@email.com" autocomplete="email">
 </div>
-
-<div id="loginScreen" class="login-box">
-  <h3 style="margin-bottom:16px;color:#fff">관리자 로그인</h3>
-  <input type="email" id="emailInput" placeholder="이메일" autocomplete="email" style="margin-bottom:4px">
-  <input type="password" id="adminPw" placeholder="비밀번호" autocomplete="current-password">
-  <button id="loginBtn">로그인</button>
-  <p id="loginError" style="color:#d63031;font-size:12px;margin-top:8px;display:none"></p>
+<div class="input-group">
+<label>비밀번호</label>
+<input type="password" id="passInput" placeholder="비밀번호" autocomplete="current-password">
 </div>
-
-<div id="adminPanel" style="display:none">
-  <div class="container">
-    <div class="stats">
-      <div class="stat-box">
-        <div class="stat-num" id="totalCount">0</div>
-        <div class="stat-label">전체</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-num" id="approvedCount" style="color:#00b894">0</div>
-        <div class="stat-label">승인됨</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-num" id="pendingCount" style="color:#fdcb6e">0</div>
-        <div class="stat-label">대기 중</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">
-        <span>⏳ 승인 대기</span>
-        <span class="count" id="pendingBadge">0</span>
-        <button class="refresh-btn" onclick="loadUsers()">🔄 새로고침</button>
-      </div>
-      <div id="pendingList"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">
-        <span>✅ 승인됨</span>
-        <span class="count" id="approvedBadge">0</span>
-      </div>
-      <div id="approvedList"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">
-        <span>❌ 거부됨</span>
-        <span class="count" id="rejectedBadge">0</span>
-      </div>
-      <div id="rejectedList"></div>
-    </div>
-  </div>
+<button class="btn btn-primary" id="loginBtn">로그인</button>
+<p class="error" id="loginError"></p>
 </div>
-
+</div>
+<div id="adminScreen" style="display:none">
+<div class="admin-wrap">
+<div class="admin-header">
+<h1>FlowRun Admin</h1>
+<button class="refresh-btn" id="refreshBtn">새로고침</button>
+</div>
+<div class="stats">
+<div class="stat-card"><div class="stat-num" id="statTotal">-</div><div class="stat-label">전체</div></div>
+<div class="stat-card"><div class="stat-num" id="statPending" style="color:#ff922b">-</div><div class="stat-label">대기</div></div>
+<div class="stat-card"><div class="stat-num" id="statApproved" style="color:#51cf66">-</div><div class="stat-label">승인</div></div>
+</div>
+<div class="tab-bar">
+<div class="tab active" data-tab="pending">대기중</div>
+<div class="tab" data-tab="approved">승인됨</div>
+<div class="tab" data-tab="rejected">거절됨</div>
+<div class="tab" data-tab="all">전체</div>
+</div>
+<div id="userList"><div class="loading">로딩중...</div></div>
+<button class="btn btn-logout" id="logoutBtn">로그아웃</button>
+</div>
+</div>
 <div class="toast" id="toast"></div>
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
-const PROJECT_ID = "flowrun-kr";
-const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
-const ADMIN_PW_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
+const firebaseConfig={apiKey:"AIzaSyDmV0EnXkmCc4epEZ_riL8qh5WVit8gZQM",authDomain:"flowrun-kr.firebaseapp.com",projectId:"flowrun-kr",storageBucket:"flowrun-kr.firebasestorage.app",messagingSenderId:"513229369378",appId:"1:513229369378:web:be4d811ec93cc860521a7b"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const FIRESTORE_BASE="https://firestore.googleapis.com/v1/projects/flowrun-kr/databases/(default)/documents";
+let allUsers=[],currentTab="pending",idToken=null;
 
-async function sha256(text) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
-}
+document.getElementById("loginBtn").addEventListener("click",doLogin);
+document.getElementById("passInput").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
 
-function showToast(msg, color) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.style.background = color || "#00b894";
-  t.style.display = "block";
-  setTimeout(() => t.style.display = "none", 2500);
-}
+async function doLogin(){
+const email=document.getElementById("emailInput").value.trim();
+const pass=document.getElementById("passInput").value;
+const err=document.getElementById("loginError");
+err.style.display="none";
+if(!email||!pass){err.textContent="이메일과 비밀번호를 입력하세요";err.style.display="block";return}
+try{
+const cred=await auth.signInWithEmailAndPassword(email,pass);
+idToken=await cred.user.getIdToken();
+document.getElementById("loginScreen").style.display="none";
+document.getElementById("adminScreen").style.display="block";
+loadUsers();
+}catch(e){
+err.textContent=e.code==="auth/wrong-password"?"비밀번호가 틀렸습니다":e.code==="auth/user-not-found"?"등록되지 않은 이메일":e.code==="auth/invalid-credential"?"이메일 또는 비밀번호 오류":"로그인 실패: "+e.message;
+err.style.display="block";
+}}
 
-async function adminLogin() {
-  const pw = document.getElementById("adminPw").value;
-  const hash = await sha256(pw);
-  if (hash === ADMIN_PW_HASH) {
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("adminPanel").style.display = "block";
-    sessionStorage.setItem("adminAuth", "true");
-    loadUsers();
-  } else {
-    const err = document.getElementById("loginError");
-    err.textContent = "비밀번호가 틀립니다";
-    err.style.display = "block";
-  }
-}
+document.getElementById("logoutBtn").addEventListener("click",()=>{auth.signOut();idToken=null;document.getElementById("adminScreen").style.display="none";document.getElementById("loginScreen").style.display="flex";document.getElementById("passInput").value=""});
 
-document.getElementById("adminPw").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") adminLogin();
-});
+async function loadUsers(){
+try{
+if(!idToken)idToken=await auth.currentUser.getIdToken(true);
+let res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+idToken}});
+if(res.status===401||res.status===403){idToken=await auth.currentUser.getIdToken(true);res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+idToken}})}
+const data=await res.json();
+allUsers=parseUsers(data);
+updateStats();renderUsers();
+}catch(e){document.getElementById("userList").innerHTML='<div class="empty">불러오기 실패: '+e.message+'</div>'}}
 
-async function loadUsers() {
-  try {
-    const res = await fetch(`${BASE_URL}/users?pageSize=100`);
-    const data = await res.json();
-    const users = (data.documents || []).map(doc => {
-      const f = doc.fields;
-      return {
-        id: doc.name.split("/").pop(),
-        email: f.email?.stringValue || "unknown",
-        status: f.status?.stringValue || "pending",
-        createdAt: f.createdAt?.timestampValue || f.createdAt?.stringValue || "",
-        displayName: f.displayName?.stringValue || ""
-      };
-    });
+function parseUsers(data){
+if(!data.documents)return[];
+return data.documents.map(doc=>{
+const f=doc.fields||{};const id=doc.name.split("/").pop();
+return{id,email:f.email?.stringValue||id,status:f.status?.stringValue||"pending",displayName:f.displayName?.stringValue||"",createdAt:f.createdAt?.timestampValue||f.createdAt?.stringValue||"",docName:doc.name}})}
 
-    const pending = users.filter(u => u.status === "pending");
-    const approved = users.filter(u => u.status === "approved");
-    const rejected = users.filter(u => u.status === "rejected");
+function updateStats(){
+document.getElementById("statTotal").textContent=allUsers.length;
+document.getElementById("statPending").textContent=allUsers.filter(u=>u.status==="pending").length;
+document.getElementById("statApproved").textContent=allUsers.filter(u=>u.status==="approved").length}
 
-    document.getElementById("totalCount").textContent = users.length;
-    document.getElementById("approvedCount").textContent = approved.length;
-    document.getElementById("pendingCount").textContent = pending.length;
-    document.getElementById("pendingBadge").textContent = pending.length;
-    document.getElementById("approvedBadge").textContent = approved.length;
-    document.getElementById("rejectedBadge").textContent = rejected.length;
+function renderUsers(){
+const list=document.getElementById("userList");
+let filtered=currentTab==="all"?allUsers:allUsers.filter(u=>u.status===currentTab);
+if(!filtered.length){list.innerHTML='<div class="empty">'+(currentTab==="pending"?"대기중인 사용자 없음":"사용자 없음")+'</div>';return}
+filtered.sort((a,b)=>(b.createdAt||"").localeCompare(a.createdAt||""));
+list.innerHTML=filtered.map(u=>{
+const sc="status-"+u.status;
+const st=u.status==="pending"?"대기중":u.status==="approved"?"승인됨":"거절됨";
+const d=u.createdAt?new Date(u.createdAt).toLocaleDateString("ko-KR"):"";
+let btns="";
+if(u.status==="pending")btns='<div class="action-btns"><button class="btn-approve" onclick="setStatus(\''+u.id+'\',\'approved\')">승인</button><button class="btn-reject" onclick="setStatus(\''+u.id+'\',\'rejected\')">거절</button></div>';
+else if(u.status==="approved")btns='<div class="action-btns"><button class="btn-revoke" onclick="setStatus(\''+u.id+'\',\'pending\')">승인취소</button><button class="btn-reject" onclick="setStatus(\''+u.id+'\',\'rejected\')">거절</button></div>';
+else btns='<div class="action-btns"><button class="btn-approve" onclick="setStatus(\''+u.id+'\',\'approved\')">승인</button></div>';
+return'<div class="user-card"><div class="user-info"><div><div class="user-email">'+(u.displayName||u.email)+'</div><div class="user-date">'+u.email+(d?" | "+d:"")+'</div></div><span class="user-status '+sc+'">'+st+'</span></div>'+btns+'</div>'}).join("")}
 
-    document.getElementById("pendingList").innerHTML = pending.length
-      ? pending.map(u => userCard(u, "pending")).join("")
-      : '<div class="empty">대기 중인 사용자가 없습니다 👍</div>';
+async function setStatus(userId,newStatus){
+try{
+if(!idToken)idToken=await auth.currentUser.getIdToken(true);
+const res=await fetch(FIRESTORE_BASE+"/users/"+userId+"?updateMask.fieldPaths=status",{method:"PATCH",headers:{"Authorization":"Bearer "+idToken,"Content-Type":"application/json"},body:JSON.stringify({fields:{status:{stringValue:newStatus}}})});
+if(!res.ok)throw new Error("HTTP "+res.status);
+showToast(newStatus==="approved"?"승인 완료":newStatus==="rejected"?"거절 완료":"대기로 변경");
+await loadUsers();
+}catch(e){showToast("실패: "+e.message)}}
 
-    document.getElementById("approvedList").innerHTML = approved.length
-      ? approved.map(u => userCard(u, "approved")).join("")
-      : '<div class="empty">승인된 사용자가 없습니다</div>';
-
-    document.getElementById("rejectedList").innerHTML = rejected.length
-      ? rejected.map(u => userCard(u, "rejected")).join("")
-      : '<div class="empty">거부된 사용자가 없습니다</div>';
-
-  } catch (err) {
-    showToast("로드 실패: " + err.message, "#d63031");
-  }
-}
-
-function userCard(user, type) {
-  const date = user.createdAt ? new Date(user.createdAt).toLocaleString("ko-KR") : "";
-  let actions = "";
-  if (type === "pending") {
-    actions = `
-      <button class="btn btn-approve" onclick="updateStatus('${user.id}','approved')">✅ 승인</button>
-      <button class="btn btn-reject" onclick="updateStatus('${user.id}','rejected')">❌ 거부</button>`;
-  } else if (type === "approved") {
-    actions = `<button class="btn btn-revoke" onclick="updateStatus('${user.id}','rejected')">권한 해제</button>`;
-  } else if (type === "rejected") {
-    actions = `<button class="btn btn-approve" onclick="updateStatus('${user.id}','approved')">✅ 승인</button>`;
-  }
-  return `
-    <div class="card">
-      <div class="email">${user.displayName || user.email}</div>
-      <div class="date">${user.email} | ${date}</div>
-      <div class="uid">UID: ${user.id}</div>
-      <div class="actions">${actions}</div>
-    </div>`;
-}
-
-async function updateStatus(uid, newStatus) {
-  try {
-    const url = `${BASE_URL}/users/${uid}?updateMask.fieldPaths=status`;
-    const res = await fetch(url, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        fields: { status: { stringValue: newStatus } }
-      })
-    });
-    if (res.ok) {
-      const label = newStatus === "approved" ? "승인" : "거부";
-      showToast(`${label} 완료!`, newStatus === "approved" ? "#00b894" : "#d63031");
-      loadUsers();
-    } else {
-      throw new Error(await res.text());
-    }
-  } catch (err) {
-    showToast("변경 실패: " + err.message, "#d63031");
-  }
-}
-
-if (sessionStorage.getItem("adminAuth")) {
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("adminPanel").style.display = "block";
-  loadUsers();
-}
+document.querySelectorAll(".tab").forEach(tab=>{tab.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active");currentTab=tab.dataset.tab;renderUsers()})});
+document.getElementById("refreshBtn").addEventListener("click",loadUsers);
+function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>{t.style.display="none"},2000)}
+auth.onAuthStateChanged(async user=>{if(user){idToken=await user.getIdToken();document.getElementById("loginScreen").style.display="none";document.getElementById("adminScreen").style.display="block";loadUsers()}});
 </script>
 </body>
 </html>
