@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FlowRun Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0f1923;color:#e0e0e0;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a2744,#0f1923);padding:20px;text-align:center;border-bottom:1px solid rgba(108,92,231,0.3)}
+.header h1{font-size:20px;background:linear-gradient(135deg,#6C5CE7,#0984E3);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{color:#888;font-size:12px;margin-top:4px}
+.login-box{max-width:360px;margin:60px auto;padding:24px;background:#1a2744;border-radius:12px;text-align:center}
+.login-box input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #333;background:#0f1923;color:#fff;font-size:14px}
+.login-box button{width:100%;padding:12px;margin-top:12px;border:none;border-radius:8px;background:linear-gradient(135deg,#6C5CE7,#0984E3);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.login-box button:hover{opacity:0.9}
+.container{max-width:600px;margin:0 auto;padding:16px}
+.section{margin:16px 0}
+.section-title{font-size:14px;color:#6C5CE7;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-title .count{background:rgba(108,92,231,0.2);color:#a29bfe;padding:2px 8px;border-radius:10px;font-size:12px}
+.card{background:#1a2744;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.05)}
+.card .email{font-size:14px;font-weight:600;color:#fff}
+.card .date{font-size:11px;color:#666;margin-top:2px}
+.card .uid{font-size:10px;color:#444;margin-top:2px;font-family:monospace}
+.card .actions{margin-top:10px;display:flex;gap:8px}
+.btn{padding:8px 20px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.btn-approve{background:#00b894;color:#fff}
+.btn-approve:hover{background:#00a381}
+.btn-reject{background:#d63031;color:#fff}
+.btn-reject:hover{background:#b71c1c}
+.btn-revoke{background:#636e72;color:#fff;padding:6px 14px;font-size:11px}
+.btn-revoke:hover{background:#535c60}
+.status-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.status-approved{background:rgba(0,184,148,0.15);color:#00b894}
+.status-pending{background:rgba(253,203,110,0.15);color:#fdcb6e}
+.status-rejected{background:rgba(214,48,49,0.15);color:#d63031}
+.empty{text-align:center;color:#555;padding:30px;font-size:13px}
+.refresh-btn{background:none;border:1px solid #333;color:#888;padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;float:right}
+.refresh-btn:hover{border-color:#6C5CE7;color:#6C5CE7}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#00b894;color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;display:none;z-index:999}
+.stats{display:flex;gap:12px;margin:16px 0}
+.stat-box{flex:1;background:#1a2744;border-radius:10px;padding:14px;text-align:center}
+.stat-num{font-size:24px;font-weight:700;color:#fff}
+.stat-label{font-size:11px;color:#888;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>FlowRun Admin Panel</h1>
+  <p>사용자 승인 관리</p>
+</div>
+
+<div id="loginScreen" class="login-box">
+  <h3 style="margin-bottom:16px;color:#fff">관리자 로그인</h3>
+  <input type="password" id="adminPw" placeholder="관리자 비밀번호" autocomplete="off">
+  <button onclick="adminLogin()">로그인</button>
+  <p id="loginError" style="color:#d63031;font-size:12px;margin-top:8px;display:none"></p>
+</div>
+
+<div id="adminPanel" style="display:none">
+  <div class="container">
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-num" id="totalCount">0</div>
+        <div class="stat-label">전체</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="approvedCount" style="color:#00b894">0</div>
+        <div class="stat-label">승인됨</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="pendingCount" style="color:#fdcb6e">0</div>
+        <div class="stat-label">대기 중</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span>⏳ 승인 대기</span>
+        <span class="count" id="pendingBadge">0</span>
+        <button class="refresh-btn" onclick="loadUsers()">🔄 새로고침</button>
+      </div>
+      <div id="pendingList"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span>✅ 승인됨</span>
+        <span class="count" id="approvedBadge">0</span>
+      </div>
+      <div id="approvedList"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span>❌ 거부됨</span>
+        <span class="count" id="rejectedBadge">0</span>
+      </div>
+      <div id="rejectedList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PROJECT_ID = "flowrun-kr";
+const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
+const ADMIN_PW_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+function showToast(msg, color) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.background = color || "#00b894";
+  t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 2500);
+}
+
+async function adminLogin() {
+  const pw = document.getElementById("adminPw").value;
+  const hash = await sha256(pw);
+  if (hash === ADMIN_PW_HASH) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("adminPanel").style.display = "block";
+    sessionStorage.setItem("adminAuth", "true");
+    loadUsers();
+  } else {
+    const err = document.getElementById("loginError");
+    err.textContent = "비밀번호가 틀립니다";
+    err.style.display = "block";
+  }
+}
+
+document.getElementById("adminPw").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") adminLogin();
+});
+
+async function loadUsers() {
+  try {
+    const res = await fetch(`${BASE_URL}/users?pageSize=100`);
+    const data = await res.json();
+    const users = (data.documents || []).map(doc => {
+      const f = doc.fields;
+      return {
+        id: doc.name.split("/").pop(),
+        email: f.email?.stringValue || "unknown",
+        status: f.status?.stringValue || "pending",
+        createdAt: f.createdAt?.timestampValue || f.createdAt?.stringValue || "",
+        displayName: f.displayName?.stringValue || ""
+      };
+    });
+
+    const pending = users.filter(u => u.status === "pending");
+    const approved = users.filter(u => u.status === "approved");
+    const rejected = users.filter(u => u.status === "rejected");
+
+    document.getElementById("totalCount").textContent = users.length;
+    document.getElementById("approvedCount").textContent = approved.length;
+    document.getElementById("pendingCount").textContent = pending.length;
+    document.getElementById("pendingBadge").textContent = pending.length;
+    document.getElementById("approvedBadge").textContent = approved.length;
+    document.getElementById("rejectedBadge").textContent = rejected.length;
+
+    document.getElementById("pendingList").innerHTML = pending.length
+      ? pending.map(u => userCard(u, "pending")).join("")
+      : '<div class="empty">대기 중인 사용자가 없습니다 👍</div>';
+
+    document.getElementById("approvedList").innerHTML = approved.length
+      ? approved.map(u => userCard(u, "approved")).join("")
+      : '<div class="empty">승인된 사용자가 없습니다</div>';
+
+    document.getElementById("rejectedList").innerHTML = rejected.length
+      ? rejected.map(u => userCard(u, "rejected")).join("")
+      : '<div class="empty">거부된 사용자가 없습니다</div>';
+
+  } catch (err) {
+    showToast("로드 실패: " + err.message, "#d63031");
+  }
+}
+
+function userCard(user, type) {
+  const date = user.createdAt ? new Date(user.createdAt).toLocaleString("ko-KR") : "";
+  let actions = "";
+  if (type === "pending") {
+    actions = `
+      <button class="btn btn-approve" onclick="updateStatus('${user.id}','approved')">✅ 승인</button>
+      <button class="btn btn-reject" onclick="updateStatus('${user.id}','rejected')">❌ 거부</button>`;
+  } else if (type === "approved") {
+    actions = `<button class="btn btn-revoke" onclick="updateStatus('${user.id}','rejected')">권한 해제</button>`;
+  } else if (type === "rejected") {
+    actions = `<button class="btn btn-approve" onclick="updateStatus('${user.id}','approved')">✅ 승인</button>`;
+  }
+  return `
+    <div class="card">
+      <div class="email">${user.displayName || user.email}</div>
+      <div class="date">${user.email} | ${date}</div>
+      <div class="uid">UID: ${user.id}</div>
+      <div class="actions">${actions}</div>
+    </div>`;
+}
+
+async function updateStatus(uid, newStatus) {
+  try {
+    const url = `${BASE_URL}/users/${uid}?updateMask.fieldPaths=status`;
+    const res = await fetch(url, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fields: { status: { stringValue: newStatus } }
+      })
+    });
+    if (res.ok) {
+      const label = newStatus === "approved" ? "승인" : "거부";
+      showToast(`${label} 완료!`, newStatus === "approved" ? "#00b894" : "#d63031");
+      loadUsers();
+    } else {
+      throw new Error(await res.text());
+    }
+  } catch (err) {
+    showToast("변경 실패: " + err.message, "#d63031");
+  }
+}
+
+if (sessionStorage.getItem("adminAuth")) {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("adminPanel").style.display = "block";
+  loadUsers();
+}
+</script>
+</body>
+</html>
