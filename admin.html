@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com 'unsafe-inline'; connect-src https://firestore.googleapis.com https://securetoken.googleapis.com https://identitytoolkit.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'none'; object-src 'none';">
 <title>FlowRun Admin</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -17,6 +18,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn{width:100%;padding:12px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s}
 .btn-primary{background:linear-gradient(135deg,#6C5CE7,#0984E3);color:#fff}
 .btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 .btn-logout{background:#2a2f45;color:#aaa;margin-top:12px;font-size:13px}
 .error{color:#ff6b6b;font-size:12px;margin-top:8px;text-align:center;display:none}
 .admin-wrap{max-width:480px;margin:0 auto;padding:16px}
@@ -99,77 +101,259 @@ const auth=firebase.auth();
 const FIRESTORE_BASE="https://firestore.googleapis.com/v1/projects/flowrun-kr/databases/(default)/documents";
 let allUsers=[],currentTab="pending",idToken=null;
 
+// XSS 방지: 모든 사용자 데이터를 HTML에 삽입 전 이스케이프
+function esc(str){
+  if(str==null)return"";
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#x27;");
+}
+
+// 브루트포스 방지: 로그인 시도 제한 (5회 실패 시 30초 잠금)
+const loginThrottle={attempts:0,lockedUntil:0};
+
 document.getElementById("loginBtn").addEventListener("click",doLogin);
 document.getElementById("passInput").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
 
 async function doLogin(){
-const email=document.getElementById("emailInput").value.trim();
-const pass=document.getElementById("passInput").value;
-const err=document.getElementById("loginError");
-err.style.display="none";
-if(!email||!pass){err.textContent="이메일과 비밀번호를 입력하세요";err.style.display="block";return}
-try{
-const cred=await auth.signInWithEmailAndPassword(email,pass);
-idToken=await cred.user.getIdToken();
-document.getElementById("loginScreen").style.display="none";
-document.getElementById("adminScreen").style.display="block";
-loadUsers();
-}catch(e){
-err.textContent=e.code==="auth/wrong-password"?"비밀번호가 틀렸습니다":e.code==="auth/user-not-found"?"등록되지 않은 이메일":e.code==="auth/invalid-credential"?"이메일 또는 비밀번호 오류":"로그인 실패: "+e.message;
-err.style.display="block";
-}}
+  const err=document.getElementById("loginError");
+  err.style.display="none";
 
-document.getElementById("logoutBtn").addEventListener("click",()=>{auth.signOut();idToken=null;document.getElementById("adminScreen").style.display="none";document.getElementById("loginScreen").style.display="flex";document.getElementById("passInput").value=""});
+  // 잠금 체크
+  if(Date.now()<loginThrottle.lockedUntil){
+    const sec=Math.ceil((loginThrottle.lockedUntil-Date.now())/1000);
+    err.textContent=sec+"초 후 다시 시도하세요";
+    err.style.display="block";
+    return;
+  }
+
+  const email=document.getElementById("emailInput").value.trim();
+  const pass=document.getElementById("passInput").value;
+  if(!email||!pass){err.textContent="이메일과 비밀번호를 입력하세요";err.style.display="block";return}
+
+  const btn=document.getElementById("loginBtn");
+  btn.disabled=true;
+  btn.textContent="로그인 중...";
+
+  try{
+    const cred=await auth.signInWithEmailAndPassword(email,pass);
+    idToken=await cred.user.getIdToken();
+
+    // 관리자 권한 검증: Firestore admins 컬렉션 확인
+    const uid=cred.user.uid;
+    const adminRes=await fetch(FIRESTORE_BASE+"/admins/"+uid,{headers:{"Authorization":"Bearer "+idToken}});
+    if(adminRes.status===404||adminRes.status===403){
+      await auth.signOut();
+      idToken=null;
+      loginThrottle.attempts++;
+      err.textContent="관리자 권한이 없습니다";
+      err.style.display="block";
+      return;
+    }
+
+    // 로그인 성공 → 카운터 초기화
+    loginThrottle.attempts=0;
+    document.getElementById("loginScreen").style.display="none";
+    document.getElementById("adminScreen").style.display="block";
+    loadUsers();
+  }catch(e){
+    loginThrottle.attempts++;
+    // 5회 실패 시 30초 잠금
+    if(loginThrottle.attempts>=5){
+      loginThrottle.lockedUntil=Date.now()+30000;
+      loginThrottle.attempts=0;
+      err.textContent="로그인 시도 초과. 30초 후 재시도하세요";
+    }else{
+      // 내부 에러 코드 미노출: 공통 메시지만 표시
+      const knownCodes=["auth/wrong-password","auth/user-not-found","auth/invalid-credential","auth/invalid-email","auth/too-many-requests"];
+      if(e.code==="auth/too-many-requests"){
+        err.textContent="로그인 시도 횟수 초과. 잠시 후 다시 시도하세요";
+      }else if(knownCodes.includes(e.code)){
+        err.textContent="이메일 또는 비밀번호를 확인하세요";
+      }else{
+        err.textContent="로그인 실패. 다시 시도하세요";
+      }
+    }
+    err.style.display="block";
+  }finally{
+    btn.disabled=false;
+    btn.textContent="로그인";
+  }
+}
+
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  auth.signOut();
+  idToken=null;
+  document.getElementById("adminScreen").style.display="none";
+  document.getElementById("loginScreen").style.display="flex";
+  document.getElementById("passInput").value="";
+});
+
+async function getToken(){
+  if(!idToken)idToken=await auth.currentUser.getIdToken(true);
+  return idToken;
+}
 
 async function loadUsers(){
-try{
-if(!idToken)idToken=await auth.currentUser.getIdToken(true);
-let res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+idToken}});
-if(res.status===401||res.status===403){idToken=await auth.currentUser.getIdToken(true);res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+idToken}})}
-const data=await res.json();
-allUsers=parseUsers(data);
-updateStats();renderUsers();
-}catch(e){document.getElementById("userList").innerHTML='<div class="empty">불러오기 실패: '+e.message+'</div>'}}
+  try{
+    let token=await getToken();
+    let res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+token}});
+    if(res.status===401||res.status===403){
+      idToken=await auth.currentUser.getIdToken(true);
+      res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+idToken}});
+    }
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    allUsers=parseUsers(data);
+    updateStats();renderUsers();
+  }catch(e){
+    // XSS Fix: textContent 사용 (innerHTML 금지)
+    const ul=document.getElementById("userList");
+    ul.innerHTML="";
+    const div=document.createElement("div");
+    div.className="empty";
+    div.textContent="불러오기 실패. 다시 시도해주세요";
+    ul.appendChild(div);
+  }
+}
 
 function parseUsers(data){
-if(!data.documents)return[];
-return data.documents.map(doc=>{
-const f=doc.fields||{};const id=doc.name.split("/").pop();
-return{id,email:f.email?.stringValue||id,status:f.status?.stringValue||"pending",displayName:f.displayName?.stringValue||"",createdAt:f.createdAt?.timestampValue||f.createdAt?.stringValue||"",docName:doc.name}})}
+  if(!data.documents)return[];
+  return data.documents.map(doc=>{
+    const f=doc.fields||{};
+    const id=doc.name.split("/").pop();
+    return{id,email:f.email?.stringValue||id,status:f.status?.stringValue||"pending",displayName:f.displayName?.stringValue||"",createdAt:f.createdAt?.timestampValue||f.createdAt?.stringValue||"",docName:doc.name};
+  });
+}
 
 function updateStats(){
-document.getElementById("statTotal").textContent=allUsers.length;
-document.getElementById("statPending").textContent=allUsers.filter(u=>u.status==="pending").length;
-document.getElementById("statApproved").textContent=allUsers.filter(u=>u.status==="approved").length}
+  document.getElementById("statTotal").textContent=allUsers.length;
+  document.getElementById("statPending").textContent=allUsers.filter(u=>u.status==="pending").length;
+  document.getElementById("statApproved").textContent=allUsers.filter(u=>u.status==="approved").length;
+}
 
 function renderUsers(){
-const list=document.getElementById("userList");
-let filtered=currentTab==="all"?allUsers:allUsers.filter(u=>u.status===currentTab);
-if(!filtered.length){list.innerHTML='<div class="empty">'+(currentTab==="pending"?"대기중인 사용자 없음":"사용자 없음")+'</div>';return}
-filtered.sort((a,b)=>(b.createdAt||"").localeCompare(a.createdAt||""));
-list.innerHTML=filtered.map(u=>{
-const sc="status-"+u.status;
-const st=u.status==="pending"?"대기중":u.status==="approved"?"승인됨":"거절됨";
-const d=u.createdAt?new Date(u.createdAt).toLocaleDateString("ko-KR"):"";
-let btns="";
-if(u.status==="pending")btns='<div class="action-btns"><button class="btn-approve" onclick="setStatus(\''+u.id+'\',\'approved\')">승인</button><button class="btn-reject" onclick="setStatus(\''+u.id+'\',\'rejected\')">거절</button></div>';
-else if(u.status==="approved")btns='<div class="action-btns"><button class="btn-revoke" onclick="setStatus(\''+u.id+'\',\'pending\')">승인취소</button><button class="btn-reject" onclick="setStatus(\''+u.id+'\',\'rejected\')">거절</button></div>';
-else btns='<div class="action-btns"><button class="btn-approve" onclick="setStatus(\''+u.id+'\',\'approved\')">승인</button></div>';
-return'<div class="user-card"><div class="user-info"><div><div class="user-email">'+(u.displayName||u.email)+'</div><div class="user-date">'+u.email+(d?" | "+d:"")+'</div></div><span class="user-status '+sc+'">'+st+'</span></div>'+btns+'</div>'}).join("")}
+  const list=document.getElementById("userList");
+  list.innerHTML="";
+  let filtered=currentTab==="all"?allUsers:allUsers.filter(u=>u.status===currentTab);
+  if(!filtered.length){
+    const div=document.createElement("div");
+    div.className="empty";
+    div.textContent=currentTab==="pending"?"대기중인 사용자 없음":"사용자 없음";
+    list.appendChild(div);
+    return;
+  }
+  filtered.sort((a,b)=>(b.createdAt||"").localeCompare(a.createdAt||""));
+  filtered.forEach(u=>{
+    const card=document.createElement("div");
+    card.className="user-card";
+
+    const info=document.createElement("div");
+    info.className="user-info";
+
+    const left=document.createElement("div");
+    const nameEl=document.createElement("div");
+    nameEl.className="user-email";
+    // XSS Fix: textContent 사용
+    nameEl.textContent=u.displayName||u.email;
+
+    const dateEl=document.createElement("div");
+    dateEl.className="user-date";
+    const d=u.createdAt?new Date(u.createdAt).toLocaleDateString("ko-KR"):"";
+    dateEl.textContent=u.email+(d?" | "+d:"");
+
+    left.appendChild(nameEl);
+    left.appendChild(dateEl);
+
+    const statusEl=document.createElement("span");
+    statusEl.className="user-status status-"+esc(u.status);
+    statusEl.textContent=u.status==="pending"?"대기중":u.status==="approved"?"승인됨":"거절됨";
+
+    info.appendChild(left);
+    info.appendChild(statusEl);
+    card.appendChild(info);
+
+    // 버튼: data-userid 사용 (onclick 인라인 문자열 인젝션 방지)
+    const btns=document.createElement("div");
+    btns.className="action-btns";
+
+    if(u.status==="pending"){
+      btns.appendChild(makeBtn("승인","btn-approve",u.id,"approved"));
+      btns.appendChild(makeBtn("거절","btn-reject",u.id,"rejected"));
+    }else if(u.status==="approved"){
+      btns.appendChild(makeBtn("승인취소","btn-revoke",u.id,"pending"));
+      btns.appendChild(makeBtn("거절","btn-reject",u.id,"rejected"));
+    }else{
+      btns.appendChild(makeBtn("승인","btn-approve",u.id,"approved"));
+    }
+
+    card.appendChild(btns);
+    list.appendChild(card);
+  });
+}
+
+function makeBtn(label,cls,userId,newStatus){
+  const btn=document.createElement("button");
+  btn.className=cls;
+  btn.textContent=label;
+  // XSS Fix: 이벤트 리스너 사용 (onclick 문자열 인젝션 방지)
+  btn.addEventListener("click",()=>setStatus(userId,newStatus));
+  return btn;
+}
 
 async function setStatus(userId,newStatus){
-try{
-if(!idToken)idToken=await auth.currentUser.getIdToken(true);
-const res=await fetch(FIRESTORE_BASE+"/users/"+userId+"?updateMask.fieldPaths=status",{method:"PATCH",headers:{"Authorization":"Bearer "+idToken,"Content-Type":"application/json"},body:JSON.stringify({fields:{status:{stringValue:newStatus}}})});
-if(!res.ok)throw new Error("HTTP "+res.status);
-showToast(newStatus==="approved"?"승인 완료":newStatus==="rejected"?"거절 완료":"대기로 변경");
-await loadUsers();
-}catch(e){showToast("실패: "+e.message)}}
+  try{
+    const token=await getToken();
+    const res=await fetch(FIRESTORE_BASE+"/users/"+encodeURIComponent(userId)+"?updateMask.fieldPaths=status",{
+      method:"PATCH",
+      headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+      body:JSON.stringify({fields:{status:{stringValue:newStatus}}})
+    });
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    showToast(newStatus==="approved"?"승인 완료":newStatus==="rejected"?"거절 완료":"대기로 변경");
+    await loadUsers();
+  }catch(e){
+    showToast("처리 실패. 다시 시도해주세요");
+  }
+}
 
-document.querySelectorAll(".tab").forEach(tab=>{tab.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active");currentTab=tab.dataset.tab;renderUsers()})});
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    currentTab=tab.dataset.tab;
+    renderUsers();
+  });
+});
+
 document.getElementById("refreshBtn").addEventListener("click",loadUsers);
-function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>{t.style.display="none"},2000)}
-auth.onAuthStateChanged(async user=>{if(user){idToken=await user.getIdToken();document.getElementById("loginScreen").style.display="none";document.getElementById("adminScreen").style.display="block";loadUsers()}});
+
+function showToast(msg){
+  const t=document.getElementById("toast");
+  // XSS Fix: textContent 사용
+  t.textContent=msg;
+  t.style.display="block";
+  setTimeout(()=>{t.style.display="none"},2000);
+}
+
+auth.onAuthStateChanged(async user=>{
+  if(user){
+    try{
+      idToken=await user.getIdToken();
+      // 관리자 권한 재확인
+      const adminRes=await fetch(FIRESTORE_BASE+"/admins/"+user.uid,{headers:{"Authorization":"Bearer "+idToken}});
+      if(adminRes.status===404||adminRes.status===403){
+        await auth.signOut();
+        idToken=null;
+        return;
+      }
+      document.getElementById("loginScreen").style.display="none";
+      document.getElementById("adminScreen").style.display="block";
+      loadUsers();
+    }catch(e){
+      await auth.signOut();
+      idToken=null;
+    }
+  }
+});
 </script>
 </body>
 </html>
