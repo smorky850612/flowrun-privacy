@@ -6,175 +6,181 @@
 <title>AuraX Bmax — 개인정보처리방침</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{max-width:720px;margin:0 auto;padding:40px 24px;font-family:'맑은 고딕',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.8;color:#333;background:#fafafa}
+body{max-width:760px;margin:0 auto;padding:40px 24px 64px;font-family:'맑은 고딕',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.8;color:#333;background:#fafafa}
 h1{font-size:28px;color:#1a1a2e;margin-bottom:8px}
 .sub{color:#666;font-size:14px;margin-bottom:32px;border-bottom:2px solid #4f6bff;padding-bottom:16px}
-h2{font-size:18px;color:#2d3436;margin:28px 0 12px;padding-left:12px;border-left:3px solid #4f6bff}
-p{margin:8px 0;color:#444}
-ul{padding-left:20px;margin:8px 0}
-li{color:#444;margin-bottom:6px}
-.hl{background:#f0f2ff;border-radius:8px;padding:16px;margin:12px 0;border:1px solid #dde0ff}
-.warn{background:#fff8e1;border-radius:8px;padding:16px;margin:12px 0;border:1px solid #ffe082}
+h2{font-size:17px;color:#1a1a2e;margin:32px 0 12px;padding:10px 14px;background:#f0f2ff;border-left:4px solid #4f6bff;border-radius:0 6px 6px 0}
+p{margin:8px 0;color:#444;font-size:15px}
+ul{padding-left:22px;margin:8px 0}
+li{color:#444;margin-bottom:8px;font-size:15px}
+.box{background:#f0f2ff;border-radius:8px;padding:16px 20px;margin:14px 0;border:1px solid #dde0ff}
+.warn{background:#fff8e1;border-radius:8px;padding:16px 20px;margin:14px 0;border:1px solid #ffe082}
+.safe{background:#e8f5e9;border-radius:8px;padding:16px 20px;margin:14px 0;border:1px solid #a5d6a7}
 .ft{margin-top:48px;padding-top:20px;border-top:1px solid #ddd;color:#999;font-size:12px;text-align:center}
-a{color:#4f6bff}
-strong{color:#222}
-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
-th{background:#4f6bff;color:#fff;padding:8px 12px;text-align:left}
-td{padding:8px 12px;border-bottom:1px solid #e0e0e0;color:#444;vertical-align:top}
-tr:nth-child(even) td{background:#f5f6ff}
+a{color:#4f6bff;text-decoration:none}
+strong{color:#1a1a2e}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+th{background:#4f6bff;color:#fff;padding:10px 12px;text-align:left;font-weight:600}
+td{padding:9px 12px;border-bottom:1px solid #e0e0e0;color:#444;vertical-align:top}
+tr:nth-child(even) td{background:#f7f8ff}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;vertical-align:middle;margin-left:4px}
+.local{background:#e8f5e9;color:#2e7d32}
+.server{background:#ffebee;color:#c62828}
+.thirdparty{background:#fff3e0;color:#e65100}
 </style>
 </head>
 <body>
 
 <h1>AuraX Bmax — 개인정보처리방침</h1>
-<p class="sub">최종 수정일: 2026년 5월 2일 &nbsp;|&nbsp; 시행일: 2026년 5월 2일</p>
+<p class="sub">최종 수정일: 2026년 5월 4일 &nbsp;|&nbsp; 시행일: 2026년 5월 4일 &nbsp;|&nbsp; 버전: 1.2.3</p>
 
 <h2>1. 개요</h2>
-<p>AuraX Bmax("확장 프로그램")는 Gemini AI 콘텐츠 생성, Google Flow 이미지 생성, 네이버 블로그 자동 포스팅 기능을 제공하는 Chrome 확장 프로그램입니다. 본 방침은 확장 프로그램이 수집·처리·보관·공유하는 데이터와 사용자 권리를 설명합니다.</p>
+<p><strong>AuraX Bmax</strong>는 Gemini AI를 활용한 블로그 콘텐츠 자동 생성, Google Flow 이미지 자동 생성, 네이버 블로그 자동 포스팅 기능을 제공하는 Chrome 확장 프로그램입니다.</p>
+<p>본 방침은 확장 프로그램이 수집·처리·보관·공유하는 모든 데이터의 종류, 저장 위치, 전송 여부, 사용 목적, 보유 기간 및 사용자 권리를 투명하게 설명합니다.</p>
+<div class="safe">
+  <strong>핵심 원칙</strong>: AuraX Bmax는 서비스 운영에 필요한 최소한의 정보만 수집하며, 광고·마케팅·제3자 판매 목적으로 데이터를 수집하거나 공유하지 않습니다.
+</div>
 
-<h2>2. 확장 프로그램이 사용자에게 입력을 요청하는 데이터</h2>
-
-<p>AuraX Bmax는 서비스 이용을 위해 아래 항목을 사용자에게 직접 입력하도록 요청합니다. 각 항목의 저장 위치와 서버 전송 여부를 명확히 안내합니다.</p>
+<h2>2. 수집하는 데이터와 저장 위치</h2>
+<p>아래 배지는 각 데이터의 저장 위치를 나타냅니다: <span class="badge local">기기 로컬</span> 사용자 기기에만 저장 &nbsp; <span class="badge server">AuraX 서버</span> AuraX 자체 서버에 저장 &nbsp; <span class="badge thirdparty">제3자 전송</span> 외부 서비스로 전송</p>
 
 <table>
+  <thead>
   <tr>
-    <th>입력 요청 항목</th>
-    <th>입력 위치</th>
+    <th>데이터 항목</th>
+    <th>수집 방법</th>
     <th>저장 위치</th>
-    <th>서버 전송 여부</th>
+    <th>용도</th>
   </tr>
+  </thead>
+  <tbody>
   <tr>
-    <td><strong>Google 계정 (이름, 이메일, 프로필 사진)</strong></td>
-    <td>Google OAuth 로그인 화면</td>
-    <td>AuraX 인증 서버 + 브라우저 로컬</td>
-    <td>전송함 — 사용자 인증 목적</td>
+    <td><strong>Google 계정 정보</strong><br><small>(이름, 이메일, 프로필 사진 URL)</small></td>
+    <td>Google OAuth 로그인 시 자동 수집</td>
+    <td><span class="badge server">AuraX 서버</span></td>
+    <td>사용자 인증 및 접근 승인 여부 확인</td>
   </tr>
   <tr>
     <td><strong>Gemini API 키</strong></td>
-    <td>설정 화면 → API 키 입력란</td>
-    <td>브라우저 로컬 스토리지 (chrome.storage.sync)</td>
-    <td>전송 안 함 — 로컬에서 Gemini API 호출 시에만 사용</td>
+    <td>사용자가 설정 화면에 직접 입력</td>
+    <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.local</small></td>
+    <td>Gemini API 호출 시에만 사용. AuraX 서버로 전송 안 함.</td>
   </tr>
   <tr>
     <td><strong>네이버 로그인 ID</strong></td>
-    <td>설정 화면 → 네이버 계정 입력란</td>
-    <td>브라우저 로컬 스토리지 (chrome.storage.sync)</td>
-    <td>전송 안 함 — 네이버 블로그 자동 로그인에만 사용</td>
+    <td>사용자가 설정 화면에 직접 입력</td>
+    <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.sync</small></td>
+    <td>네이버 블로그 자동 로그인. AuraX 서버로 전송 안 함.</td>
   </tr>
   <tr>
     <td><strong>네이버 로그인 비밀번호</strong></td>
-    <td>설정 화면 → 네이버 계정 입력란</td>
-    <td>브라우저 로컬 스토리지 (chrome.storage.local)</td>
-    <td>전송 안 함 — 네이버 블로그 자동 로그인에만 사용</td>
+    <td>사용자가 설정 화면에 직접 입력</td>
+    <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.local</small></td>
+    <td>네이버 블로그 자동 로그인. AuraX 서버로 전송 안 함.</td>
   </tr>
   <tr>
     <td><strong>네이버 블로그 ID</strong></td>
-    <td>설정 화면 → 블로그 설정</td>
-    <td>브라우저 로컬 스토리지 (chrome.storage.sync)</td>
-    <td>전송 안 함 — 포스팅 대상 블로그 식별에만 사용</td>
+    <td>사용자가 설정 화면에 직접 입력</td>
+    <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.sync</small></td>
+    <td>포스팅 대상 블로그 식별. AuraX 서버로 전송 안 함.</td>
   </tr>
   <tr>
     <td><strong>Cloudflare Worker URL</strong></td>
-    <td>설정 화면 → 서버 설정</td>
-    <td>브라우저 로컬 스토리지 (chrome.storage.sync)</td>
-    <td>전송 안 함 — 인증 서버 주소 로컬 저장</td>
+    <td>사용자가 설정 화면에 직접 입력</td>
+    <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.sync</small></td>
+    <td>인증 서버 주소 저장. AuraX 서버로 전송 안 함.</td>
   </tr>
   <tr>
     <td><strong>블로그 포스팅 키워드</strong></td>
-    <td>메인 화면 → 키워드 입력란</td>
-    <td>세션 중에만 사용 (저장 안 함)</td>
-    <td>Google Gemini API로 전송 — 콘텐츠 생성 목적</td>
+    <td>사용자가 메인 화면에 직접 입력</td>
+    <td>세션 중에만 임시 사용 (저장 안 함)</td>
+    <td><span class="badge thirdparty">제3자 전송</span> Google Gemini API로 전달 — 콘텐츠 생성 목적. AuraX 서버에 저장 안 함.</td>
   </tr>
   <tr>
-    <td><strong>블로그 작성 지침 (글쓰기 지침 텍스트)</strong></td>
-    <td>설정 화면 → 나만의 지침</td>
-    <td>AuraX 서버 (익명 저장)</td>
-    <td>전송함 — 서비스 품질 개선 목적, 개인 식별 정보 미포함</td>
+    <td><strong>블로그 작성 지침 (나만의 지침)</strong></td>
+    <td>사용자가 설정 화면에 직접 입력 (선택사항)</td>
+    <td><span class="badge server">AuraX 서버</span> (익명 저장)</td>
+    <td>서비스 품질 개선 목적. 이름·이메일 등 개인 식별 정보 미포함.</td>
   </tr>
+  <tr>
+    <td><strong>생성된 콘텐츠</strong><br><small>(제목, 본문, 태그, 이미지)</small></td>
+    <td>Gemini API 및 Google Flow가 자동 생성</td>
+    <td>세션 중에만 임시 사용 (저장 안 함)</td>
+    <td>네이버 블로그 포스팅 후 폐기. AuraX 서버에 저장 안 함.</td>
+  </tr>
+  </tbody>
 </table>
 
 <div class="warn">
-  <strong>블로그 작성 지침 수집 안내</strong>: 사용자가 지침을 저장할 때 해당 텍스트가 서비스 품질 개선 목적으로 AuraX 서버에 익명으로 저장됩니다. 이름·이메일 등 개인 식별 정보는 포함되지 않습니다. 이에 동의하지 않으시면 해당 기능을 사용하지 마세요.
+  <strong>블로그 작성 지침 수집 고지</strong>: 사용자가 '나만의 지침'을 저장하면 해당 텍스트가 서비스 품질 개선 목적으로 AuraX 서버에 익명으로 저장됩니다. 개인 식별 정보(이름, 이메일 등)는 포함되지 않습니다. 이 기능은 선택사항이며, 사용을 원하지 않으면 해당 필드를 비워두시면 됩니다.
 </div>
 
-<h2>3. 자동으로 수집되는 정보</h2>
-<p>사용자의 입력 없이 아래 정보가 자동 수집됩니다:</p>
+<h2>3. 사용 권한과 필요 이유</h2>
+<p>Chrome Web Store 정책에 따라, 요청하는 각 권한의 사용 목적을 아래에 명시합니다.</p>
 <ul>
-  <li><strong>Google OAuth 로그인 시</strong>: 이름, 이메일 주소, 프로필 사진 URL이 자동으로 수집되어 AuraX 인증 서버로 전송됩니다.</li>
-  <li><strong>이미지 생성 시</strong>: Google Flow에서 생성된 이미지가 자동 다운로드됩니다. 이미지 데이터는 AuraX 서버에 저장되지 않습니다.</li>
+  <li><strong>identity</strong>: Google OAuth 2.0 로그인 처리. 승인된 사용자만 서비스를 이용할 수 있도록 인증합니다.</li>
+  <li><strong>sidePanel</strong>: 확장 프로그램의 사이드패널 UI를 표시합니다.</li>
+  <li><strong>storage</strong>: Gemini API 키, 네이버 계정 정보, 설정값을 브라우저 로컬에 안전하게 저장합니다.</li>
+  <li><strong>scripting</strong>: Google Flow 및 네이버 블로그 에디터를 자동화하기 위해 해당 페이지에 스크립트를 주입합니다.</li>
+  <li><strong>downloads</strong>: Google Flow에서 자동 생성된 이미지를 사용자 기기에 다운로드합니다.</li>
+  <li><strong>clipboardWrite</strong>: 생성된 블로그 콘텐츠를 네이버 에디터에 자동으로 붙여넣기 합니다. 클립보드 내용을 읽거나 수집하지 않습니다.</li>
+  <li><strong>notifications</strong>: 작업 완료, 오류 발생 시 브라우저 알림을 표시합니다.</li>
+  <li><strong>debugger</strong>: Google Flow에서 생성된 이미지의 네트워크 응답을 인터셉트하여 이미지 데이터를 추출하고 다운로드합니다. 이 권한은 Google Flow의 이미지 생성 자동화에만 사용되며, 그 외 어떤 데이터도 수집하거나 전송하지 않습니다.</li>
 </ul>
 
-<h2>4. 개인정보의 처리 목적</h2>
+<h2>4. 제3자 서비스 및 데이터 전송</h2>
+<div class="box">
+  <strong>AuraX Bmax는 수집한 정보를 제3자에게 판매하거나 광고·마케팅 목적으로 제공하지 않습니다.</strong>
+</div>
+<p>서비스 기능 수행을 위해 다음 외부 서비스로 데이터가 전송됩니다:</p>
 <ul>
-  <li><strong>인증 및 접근 제어</strong>: Google 계정 정보(이름, 이메일)를 AuraX 인증 서버에 전송하여 승인된 사용자인지 확인합니다.</li>
-  <li><strong>서비스 제공</strong>: Gemini API, Google Flow, 네이버 블로그 자동화 기능을 정상적으로 동작시키기 위해 사용자가 입력한 설정값을 로컬에서 처리합니다.</li>
-  <li><strong>서비스 개선</strong>: 사용자가 저장한 블로그 작성 지침(익명)을 분석하여 서비스 품질을 개선합니다.</li>
-  <li><strong>알림 제공</strong>: 작업 완료 또는 오류 발생 시 브라우저 알림을 전송합니다.</li>
+  <li><strong>AuraX 인증 서버 (Cloudflare Workers)</strong>: Google 계정 정보(이름, 이메일)를 전송하여 승인된 사용자인지 확인합니다. AuraX 자체 서버이며 제3자가 아닙니다.</li>
+  <li><strong>Google Gemini API</strong>: 사용자가 입력한 키워드와 글쓰기 요청이 전송되어 블로그 콘텐츠가 생성됩니다. <a href="https://policies.google.com/privacy" target="_blank">Google 개인정보처리방침</a> 적용.</li>
+  <li><strong>Google Flow (labs.google)</strong>: 이미지 생성을 위한 프롬프트가 전송됩니다. <a href="https://policies.google.com/privacy" target="_blank">Google 개인정보처리방침</a> 적용.</li>
+  <li><strong>네이버 블로그 (blog.naver.com)</strong>: 생성된 콘텐츠(제목, 본문, 이미지, 태그)가 포스팅 목적으로 네이버 서비스에 전송됩니다. <a href="https://policy.naver.com/rules/privacy.html" target="_blank">네이버 개인정보처리방침</a> 적용.</li>
+  <li><strong>법령에 따른 제공</strong>: 관련 법령에 의한 의무가 있는 경우에만 해당 기관에 제공될 수 있습니다.</li>
 </ul>
 
 <h2>5. 개인정보 보유 및 이용 기간</h2>
 <ul>
-  <li><strong>Google 계정 정보</strong>: 사용자가 탈퇴 또는 삭제를 요청하는 즉시 AuraX 서버에서 삭제합니다.</li>
-  <li><strong>블로그 작성 지침</strong>: 익명으로 보관되며, 삭제 요청 시 즉시 처리합니다.</li>
-  <li><strong>로컬 데이터</strong>: 사용자가 Chrome에서 확장 프로그램을 제거하거나 직접 초기화하면 즉시 삭제됩니다.</li>
+  <li><strong>Google 계정 정보 (AuraX 서버)</strong>: 사용자가 탈퇴 또는 삭제 요청 시 즉시 삭제합니다.</li>
+  <li><strong>블로그 작성 지침 (AuraX 서버, 익명)</strong>: 삭제 요청 시 즉시 처리합니다.</li>
+  <li><strong>기기 로컬 데이터</strong>: 사용자가 Chrome에서 확장 프로그램을 제거하거나 설정 화면에서 직접 삭제하면 즉시 삭제됩니다.</li>
+  <li><strong>세션 임시 데이터 (키워드, 생성 콘텐츠)</strong>: 작업 완료 즉시 폐기되며 어디에도 저장되지 않습니다.</li>
 </ul>
 
-<h2>6. 개인정보 제3자 제공 및 공유</h2>
-<div class="hl">
-  <p><strong>AuraX Bmax는 수집한 정보를 외부 제3자에게 판매하거나 제공하지 않습니다.</strong></p>
-</div>
-<p>다음의 경우에만 데이터가 전송됩니다:</p>
-<ul>
-  <li><strong>AuraX 인증 서버</strong>: Google 계정 정보(이름, 이메일)를 전송하여 사용자 승인 여부를 확인합니다. 이 서버는 제3자가 아닌 AuraX 자체 서버입니다.</li>
-  <li><strong>Google Gemini API</strong>: 사용자가 입력한 키워드 및 글쓰기 요청이 전송됩니다. <a href="https://policies.google.com/privacy">Google 개인정보처리방침</a> 적용.</li>
-  <li><strong>Google Flow</strong>: 이미지 생성을 위한 프롬프트가 전송됩니다. <a href="https://policies.google.com/privacy">Google 개인정보처리방침</a> 적용.</li>
-  <li><strong>네이버 블로그</strong>: 생성된 콘텐츠(제목, 본문, 이미지)가 네이버 블로그 API로 전송됩니다. <a href="https://policy.naver.com/rules/privacy.html">네이버 개인정보처리방침</a> 적용.</li>
-  <li><strong>법령에 따른 제공</strong>: 법적 의무가 있는 경우에 한해 관련 기관에 제공될 수 있습니다.</li>
-</ul>
-
-<h2>7. 개인정보 보호 조치 (보안)</h2>
+<h2>6. 개인정보 보호 조치</h2>
 <ul>
   <li><strong>전송 암호화</strong>: AuraX 서버와의 모든 통신은 HTTPS(TLS)로 암호화됩니다.</li>
-  <li><strong>로컬 격리</strong>: Gemini API 키, 네이버 계정 정보 등 민감한 정보는 사용자 기기의 브라우저 로컬 스토리지에만 저장되며, 외부로 전송되지 않습니다.</li>
-  <li><strong>접근 제한</strong>: AuraX 서버에 저장된 사용자 정보는 관리자만 접근할 수 있으며, 승인 처리 목적으로만 사용됩니다.</li>
-  <li><strong>최소 수집 원칙</strong>: 서비스 운영에 필요한 최소한의 정보만 수집합니다.</li>
+  <li><strong>로컬 격리</strong>: Gemini API 키, 네이버 계정 정보 등 민감 정보는 사용자 기기의 브라우저 로컬 스토리지에만 저장되며 외부로 전송되지 않습니다.</li>
+  <li><strong>API 키 보호</strong>: Gemini API 키는 HTTP 헤더(x-goog-api-key)를 통해 전달되며, URL에 노출되지 않습니다.</li>
+  <li><strong>최소 권한 원칙</strong>: 서비스 운영에 반드시 필요한 권한만 요청합니다.</li>
+  <li><strong>접근 제한</strong>: AuraX 서버에 저장된 정보는 관리자만 접근할 수 있으며 사용자 인증 목적으로만 사용합니다.</li>
 </ul>
 
-<h2>8. 사용하는 권한 및 목적</h2>
+<h2>7. 사용자 권리</h2>
+<p>사용자는 아래 권리를 행사할 수 있으며, 요청 시 7일 이내에 처리합니다:</p>
 <ul>
-  <li><strong>identity</strong>: Google 계정으로 로그인(OAuth 2.0) 처리</li>
-  <li><strong>sidePanel</strong>: 확장 프로그램 사이드패널 UI 표시</li>
-  <li><strong>storage</strong>: API 키, 설정값을 브라우저 로컬에 저장</li>
-  <li><strong>scripting</strong>: Google Flow 및 네이버 블로그 자동화 스크립트 실행</li>
-  <li><strong>downloads</strong>: Google Flow에서 생성된 이미지 자동 다운로드</li>
-  <li><strong>clipboardWrite</strong>: 생성된 콘텐츠 자동 붙여넣기</li>
-  <li><strong>notifications</strong>: 작업 완료·오류 알림 표시</li>
-  <li><strong>debugger</strong>: Google Flow 이미지 다운로드 인터셉트 (이미지 저장 자동화)</li>
+  <li><strong>열람</strong>: AuraX 서버에 저장된 본인 데이터 목록 확인</li>
+  <li><strong>삭제</strong>: 계정 탈퇴 및 저장된 모든 데이터 삭제</li>
+  <li><strong>수정</strong>: 저장된 정보의 오류 수정</li>
+  <li><strong>처리 정지</strong>: 특정 데이터 처리 중단 요청</li>
+  <li><strong>로컬 데이터 직접 삭제</strong>: 설정 화면에서 API 키, 네이버 계정 정보를 직접 삭제하거나 확장 프로그램 제거로 즉시 삭제</li>
 </ul>
 
-<h2>9. 사용자 권리</h2>
-<p>사용자는 개인정보와 관련하여 다음의 권리를 행사할 수 있습니다:</p>
+<h2>8. 아동 개인정보 보호</h2>
+<p>AuraX Bmax는 만 14세 미만 아동의 개인정보를 의도적으로 수집하지 않습니다. 아동의 개인정보 수집이 확인될 경우 즉시 삭제 조치합니다.</p>
+
+<h2>9. 방침 변경 안내</h2>
+<p>본 방침은 법령 변경 또는 서비스 업데이트에 따라 개정될 수 있습니다. 중요한 변경사항은 이 페이지에 게시하며 버전과 수정일을 함께 표시합니다.</p>
+
+<h2>10. 문의</h2>
+<p>개인정보 관련 문의, 열람·삭제·수정 요청은 아래 경로로 연락해 주세요. 요청 접수 후 7일 이내에 처리합니다.</p>
 <ul>
-  <li><strong>열람 요청</strong>: AuraX 서버에 저장된 본인의 데이터 목록을 요청할 수 있습니다.</li>
-  <li><strong>삭제 요청</strong>: 계정 탈퇴 및 저장된 모든 데이터의 삭제를 요청할 수 있습니다.</li>
-  <li><strong>수정 요청</strong>: 잘못된 정보의 수정을 요청할 수 있습니다.</li>
-  <li><strong>처리 정지 요청</strong>: 특정 데이터의 처리 중단을 요청할 수 있습니다.</li>
-</ul>
-<p>권리 행사는 아래 문의처를 통해 요청하시면 7일 이내에 처리합니다.</p>
-
-<h2>10. 아동 개인정보 보호</h2>
-<p>AuraX Bmax는 만 14세 미만 아동의 개인정보를 고의로 수집하지 않습니다. 아동의 개인정보가 수집된 사실이 확인될 경우 즉시 삭제 조치합니다.</p>
-
-<h2>11. 방침 변경</h2>
-<p>본 개인정보처리방침은 법령 또는 서비스 변경에 따라 업데이트될 수 있습니다. 변경 시 이 페이지에 최신 내용을 게시하며, 중요한 변경사항은 확장 프로그램 내 알림으로 안내합니다.</p>
-
-<h2>12. 문의</h2>
-<p>개인정보 관련 문의, 열람·삭제·수정 요청은 아래 경로로 연락해 주세요:</p>
-<ul>
-  <li><a href="https://github.com/smorky850612/flowrun-privacy/issues">GitHub Issues</a></li>
-  <li>이메일: smorky850612@gmail.com</li>
+  <li>이메일: <a href="mailto:smorky850612@gmail.com">smorky850612@gmail.com</a></li>
+  <li><a href="https://github.com/smorky850612/flowrun-privacy/issues" target="_blank">GitHub Issues</a></li>
 </ul>
 
-<div class="ft"><p>AuraX Bmax v1.2.1 &nbsp;|&nbsp; © 2026 AuraX</p></div>
+<div class="ft"><p>AuraX Bmax v1.2.3 &nbsp;|&nbsp; © 2026 AuraX &nbsp;|&nbsp; 최종 수정: 2026년 5월 4일</p></div>
 </body>
 </html>
