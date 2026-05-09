@@ -2,58 +2,225 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FlowRun Privacy Policy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowRun 개인정보 처리방침 / Privacy Policy</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{max-width:720px;margin:0 auto;padding:40px 24px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.8;color:#333;background:#fafafa}
-h1{font-size:28px;color:#1a1a2e;margin-bottom:8px}
-.sub{color:#666;font-size:14px;margin-bottom:32px;border-bottom:2px solid #6C5CE7;padding-bottom:16px}
-h2{font-size:18px;color:#2d3436;margin:28px 0 12px;padding-left:12px;border-left:3px solid #6C5CE7}
-p{margin:8px 0;color:#444}
-.hl{background:#f0f0ff;border-radius:8px;padding:16px;margin:12px 0;border:1px solid #e0e0ff}
-.ft{margin-top:48px;padding-top:20px;border-top:1px solid #ddd;color:#999;font-size:12px;text-align:center}
-a{color:#6C5CE7}
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", sans-serif;
+         max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #222; }
+  h1 { border-bottom: 3px solid #6c5ce7; padding-bottom: 10px; }
+  h2 { color: #6c5ce7; margin-top: 32px; }
+  h3 { color: #444; margin-top: 24px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: #f5f5f7; }
+  code { background: #f5f5f7; padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
+  .lang-toggle { background: #6c5ce7; color: white; padding: 6px 12px; border-radius: 6px; display: inline-block; margin-right: 8px; text-decoration: none; }
+  hr { border: none; border-top: 2px solid #e0e0e0; margin: 50px 0; }
+  .meta { color: #666; font-size: 0.9em; }
+  ul, ol { padding-left: 24px; }
 </style>
 </head>
 <body>
-<h1>FlowRun Privacy Policy</h1>
-<p class="sub">Last updated: April 3, 2026</p>
 
-<h2>1. Overview</h2>
-<p>FlowRun is a Chrome extension that automates AI image batch generation on Google Flow (labs.google/fx).</p>
+<h1>FlowRun 개인정보 처리방침</h1>
+<p class="meta">최종 수정일: 2026년 5월 9일 · 적용 버전: v3.3.3 이상</p>
 
-<h2>2. Data Collection</h2>
-<div class="hl"><p><strong>FlowRun does NOT collect, store, or transmit any personal information.</strong></p></div>
-<p>FlowRun does not operate any external servers.</p>
+<p>
+  FlowRun(이하 "본 확장")은 Google Labs Flow에서의 AI 이미지·영상 배치 생성 자동화를 제공하는
+  Chrome 확장 프로그램입니다. 본 방침은 본 확장이 처리하는 정보의 종류, 목적, 저장 위치, 사용자 권리를
+  설명합니다.
+</p>
 
-<h2>3. Data Processing</h2>
-<p><strong>Prompts:</strong> Processed only within the browser and sent directly to Google Flow.</p>
-<p><strong>Reference Images:</strong> Stored temporarily in browser session memory (RAM) and deleted when the tab is closed.</p>
-<p><strong>Settings:</strong> Saved in Chrome local storage (chrome.storage.local) and never leave the device.</p>
-<p><strong>Downloads:</strong> Saved to the Chrome download folder specified by the user.</p>
+<h2>1. 수집·처리하는 개인정보 항목</h2>
+<table>
+  <tr><th>항목</th><th>출처</th><th>수집 시점</th><th>저장 위치</th></tr>
+  <tr>
+    <td>이메일 주소 (email)</td>
+    <td>Google OAuth (chrome.identity)</td>
+    <td>최초 로그인 시 1회</td>
+    <td>Firebase Firestore + chrome.storage.local</td>
+  </tr>
+  <tr>
+    <td>표시 이름 (displayName)</td>
+    <td>Google OAuth</td>
+    <td>최초 로그인 시 1회</td>
+    <td>Firebase Firestore + chrome.storage.local</td>
+  </tr>
+  <tr>
+    <td>프로필 사진 URL (photoURL)</td>
+    <td>Google OAuth</td>
+    <td>최초 로그인 시 1회</td>
+    <td>Firebase Firestore + chrome.storage.local</td>
+  </tr>
+  <tr>
+    <td>Google 계정 고유 ID (uid)</td>
+    <td>Firebase Auth</td>
+    <td>최초 로그인 시 생성</td>
+    <td>Firebase Firestore + chrome.storage.local</td>
+  </tr>
+  <tr>
+    <td>최근 활동 시각 (lastActiveAt)</td>
+    <td>본 확장 자체 기록</td>
+    <td>로그인·상태 확인 시 갱신</td>
+    <td>Firebase Firestore</td>
+  </tr>
+  <tr>
+    <td>사용자 승인 상태 (status)</td>
+    <td>관리자가 부여 (pending/approved)</td>
+    <td>최초 등록 시 pending, 관리자 승인 시 approved</td>
+    <td>Firebase Firestore</td>
+  </tr>
+  <tr>
+    <td>Firebase 인증 토큰 (idToken, refreshToken)</td>
+    <td>Firebase Auth</td>
+    <td>로그인 시 발급</td>
+    <td>chrome.storage.local (브라우저 내)</td>
+  </tr>
+</table>
 
-<h2>4. Third-Party Sharing</h2>
-<div class="hl"><p><strong>FlowRun does NOT share any data with third parties.</strong></p></div>
+<p>
+  <strong>수집하지 않는 정보:</strong> 비밀번호, 결제 정보, 위치, IP 주소, 웹 방문 기록, 키 입력 로그,
+  마우스 위치, 다른 사이트의 콘텐츠, Google Flow 외부의 어떤 데이터도 수집하지 않습니다.
+</p>
 
-<h2>5. Permissions</h2>
-<p><strong>activeTab:</strong> To inject prompts into the Google Flow page.</p>
-<p><strong>sidePanel:</strong> To provide the user interface.</p>
-<p><strong>storage:</strong> To save user settings locally.</p>
-<p><strong>downloads:</strong> To auto-download generated images.</p>
+<h2>2. 처리 목적</h2>
+<ul>
+  <li><strong>사용자 인증 및 승인 관리:</strong> 본 확장은 관리자 승인 기반 베타 서비스입니다. Google 계정으로 로그인한 사용자의 승인 상태(승인/대기)를 확인해 기능 접근을 제어합니다.</li>
+  <li><strong>중복 가입 방지 및 사용자 식별:</strong> uid를 키로 하나의 Google 계정당 하나의 사용자 레코드만 생성합니다.</li>
+  <li><strong>본 확장 운영자에게 사용자 식별 표시:</strong> 관리자가 승인 요청을 검토할 때 본인 확인용으로 email/displayName 노출.</li>
+</ul>
+<p>
+  <strong>사용하지 않는 목적:</strong> 광고, 마케팅, 통계 분석, 외부 판매, 신용도 판단, 머신러닝 학습 데이터.
+</p>
 
-<h2>6. Google Flow</h2>
-<p>FlowRun interacts with Google Flow (labs.google/fx). For Google data handling, see <a href="https://policies.google.com/privacy">Google Privacy Policy</a>.</p>
+<h2>3. 저장 위치 및 제3자</h2>
+<ul>
+  <li><strong>Firebase Firestore (Google Cloud)</strong> — 프로젝트 ID: <code>flowrun-kr</code>. Google이 관리하는 인프라이며, Google의 개인정보 처리방침이 함께 적용됩니다.</li>
+  <li><strong>chrome.storage.local</strong> — 사용자 본인 브라우저 내부에만 저장. 외부 송신 없음.</li>
+  <li><strong>제3자 제공 없음:</strong> 본 확장은 Firebase(Google) 외 어떠한 제3자에게도 사용자 데이터를 판매·전송·공유하지 않습니다.</li>
+</ul>
 
-<h2>7. Children</h2>
-<p>FlowRun does not knowingly collect data from children under 13.</p>
+<h2>4. 보존 및 삭제</h2>
+<ul>
+  <li><strong>보존 기간:</strong> 사용자가 삭제 요청을 하기 전까지 또는 본 확장이 종료될 때까지 Firestore에 보관됩니다.</li>
+  <li><strong>로그아웃 시:</strong> chrome.storage.local의 토큰·캐시 정보는 즉시 삭제되지만, Firestore 사용자 레코드는 별도 삭제 요청 전까지 유지됩니다.</li>
+  <li><strong>확장 제거 시:</strong> chrome.storage.local 데이터는 Chrome에 의해 자동 삭제됩니다. Firestore 레코드는 자동 삭제되지 않으므로 제거를 원하시면 아래 연락처로 요청해 주세요.</li>
+</ul>
 
-<h2>8. Changes</h2>
-<p>This policy may be updated. Changes will be posted on this page.</p>
+<h2>5. 사용자의 권리</h2>
+<p>본 확장 사용자는 언제든 다음을 요청할 수 있습니다:</p>
+<ul>
+  <li>본인의 Firestore 레코드 열람 (저장된 email, displayName 등 확인)</li>
+  <li>본인의 Firestore 레코드 삭제 (계정 정보 영구 삭제)</li>
+  <li>처리 정지 요청 (서비스 이용 중단)</li>
+</ul>
+<p>요청은 아래 GitHub Issues 또는 이메일을 통해 접수합니다. 신원 확인 후 7영업일 이내에 처리합니다.</p>
 
-<h2>9. Contact</h2>
-<p>Questions? Open an issue at <a href="https://github.com/smorky850612/flowrun-privacy/issues">GitHub Issues</a>.</p>
+<h2>6. 사용 권한 및 사유</h2>
+<table>
+  <tr><th>권한</th><th>사용 목적</th></tr>
+  <tr><td><code>identity</code></td><td>Google OAuth 로그인 (chrome.identity.getAuthToken)</td></tr>
+  <tr><td><code>storage</code></td><td>토큰·설정·레퍼런스 이미지를 chrome.storage.local에 저장</td></tr>
+  <tr><td><code>tabs</code> / <code>activeTab</code></td><td>Google Flow 탭 자동 생성·검색·메시지 송수신</td></tr>
+  <tr><td><code>scripting</code></td><td>Flow 페이지에 콘텐츠 스크립트 주입</td></tr>
+  <tr><td><code>downloads</code></td><td>생성된 이미지를 사용자 다운로드 폴더에 저장</td></tr>
+  <tr><td><code>notifications</code></td><td>배치 작업 완료 시 데스크톱 알림</td></tr>
+  <tr><td><code>sidePanel</code></td><td>사이드패널 UI 제공</td></tr>
+  <tr><td><code>offscreen</code></td><td>Service Worker에서 직접 처리할 수 없는 Firebase Auth REST 호출</td></tr>
+  <tr><td><code>debugger</code></td><td>Flow 페이지의 isTrusted 사용자 제스처 검증을 통과하기 위한 신뢰된 클릭 1회 발생 (chrome.debugger Runtime.evaluate userGesture:true). 사용 후 즉시 detach.</td></tr>
+  <tr><td>호스트 권한 <code>https://labs.google/*</code>, <code>https://flow.google/*</code></td><td>Flow 페이지 DOM 접근 (자동화 대상). 그 외 도메인 접근 안 함.</td></tr>
+</table>
 
-<div class="ft"><p>FlowRun v3.2.6 | 2026 AuraX</p></div>
+<h2>7. 외부 서비스</h2>
+<ul>
+  <li><strong>Google Labs Flow</strong> (labs.google/fx) — 사용자가 직접 상호작용하는 대상. 프롬프트, 생성 결과는 Google Flow의 처리방침이 적용됩니다.</li>
+  <li><strong>Firebase / Firestore</strong> (Google Cloud) — 사용자 인증·승인 상태 저장. Google의 처리방침이 함께 적용됩니다.</li>
+</ul>
+
+<h2>8. 미성년자</h2>
+<p>본 확장은 만 14세 미만 아동의 데이터를 의도적으로 수집하지 않습니다. Google 계정 정책에 따라 가입 가능한 연령 이상에서만 사용 가능합니다.</p>
+
+<h2>9. 방침 변경</h2>
+<p>본 방침이 변경될 경우 이 페이지의 "최종 수정일"을 갱신합니다. 중대한 변경 시 본 확장 내 공지 시스템을 통해 안내합니다.</p>
+
+<h2>10. 연락처</h2>
+<ul>
+  <li>GitHub Issues: <a href="https://github.com/smorky850612/flowrun-privacy/issues">https://github.com/smorky850612/flowrun-privacy/issues</a></li>
+  <li>이메일: smorky850612@gmail.com</li>
+</ul>
+
+<hr>
+
+<h1>FlowRun Privacy Policy (English)</h1>
+<p class="meta">Last updated: May 9, 2026 · Applies to: v3.3.3+</p>
+
+<p>FlowRun is a Chrome extension that automates AI image and video batch generation on Google Labs Flow. This policy describes the personal data we process, why, where it is stored, and your rights.</p>
+
+<h2>1. Personal Data We Process</h2>
+<table>
+  <tr><th>Item</th><th>Source</th><th>When collected</th><th>Stored at</th></tr>
+  <tr><td>Email</td><td>Google OAuth</td><td>First sign-in (once)</td><td>Firebase Firestore + chrome.storage.local</td></tr>
+  <tr><td>Display name</td><td>Google OAuth</td><td>First sign-in (once)</td><td>Firebase Firestore + chrome.storage.local</td></tr>
+  <tr><td>Profile photo URL</td><td>Google OAuth</td><td>First sign-in (once)</td><td>Firebase Firestore + chrome.storage.local</td></tr>
+  <tr><td>Google account UID</td><td>Firebase Auth</td><td>Created on first sign-in</td><td>Firebase Firestore + chrome.storage.local</td></tr>
+  <tr><td>Last active timestamp</td><td>Extension itself</td><td>Updated on sign-in/status check</td><td>Firebase Firestore</td></tr>
+  <tr><td>Approval status</td><td>Set by admin</td><td>Initial: pending; admin: approved</td><td>Firebase Firestore</td></tr>
+  <tr><td>Firebase ID/refresh tokens</td><td>Firebase Auth</td><td>On sign-in</td><td>chrome.storage.local (browser only)</td></tr>
+</table>
+
+<p><strong>NOT collected:</strong> passwords, payment info, location, IP address, browsing history, keystroke logs, mouse position, content from other sites, or any data outside Google Flow.</p>
+
+<h2>2. Purposes</h2>
+<ul>
+  <li><strong>User authentication and approval management:</strong> FlowRun is an admin-approved beta service. We check the approval status (pending/approved) of users signed in with their Google account to gate feature access.</li>
+  <li><strong>Duplicate-account prevention and identification:</strong> The UID acts as a primary key — one Google account = one user record.</li>
+  <li><strong>Identification for the extension operator:</strong> Email/displayName are shown to the admin during approval review only.</li>
+</ul>
+<p><strong>NOT used for:</strong> advertising, marketing, statistical analytics, third-party sale, credit scoring, or ML training.</p>
+
+<h2>3. Storage and Third Parties</h2>
+<ul>
+  <li><strong>Firebase Firestore (Google Cloud)</strong> — project ID <code>flowrun-kr</code>. Managed infrastructure by Google; Google's privacy policy also applies.</li>
+  <li><strong>chrome.storage.local</strong> — stored only inside your own browser; not transmitted externally.</li>
+  <li><strong>No third-party sharing:</strong> FlowRun does not sell, share, or transfer user data to any party other than Firebase (Google) infrastructure.</li>
+</ul>
+
+<h2>4. Retention and Deletion</h2>
+<ul>
+  <li><strong>Retention period:</strong> Records remain in Firestore until you request deletion or the extension is discontinued.</li>
+  <li><strong>On sign-out:</strong> chrome.storage.local tokens/cache are immediately cleared; Firestore record persists until separate deletion request.</li>
+  <li><strong>On extension uninstall:</strong> chrome.storage.local is auto-deleted by Chrome. Firestore record is NOT auto-deleted; contact us to delete it.</li>
+</ul>
+
+<h2>5. Your Rights</h2>
+<p>You may request at any time:</p>
+<ul>
+  <li>Access to your Firestore record (view stored email, displayName, etc.)</li>
+  <li>Deletion of your Firestore record (permanent removal)</li>
+  <li>Suspension of processing (stop using the service)</li>
+</ul>
+<p>Submit requests via the contact methods below. We respond within 7 business days after identity verification.</p>
+
+<h2>6. Permissions Used</h2>
+<p>See the Korean section above (Section 6) for the full list. Each permission is used solely for the stated purpose; <code>debugger</code> attaches only to <code>https://labs.google/*</code> tabs and detaches immediately after a single trusted click.</p>
+
+<h2>7. External Services</h2>
+<ul>
+  <li><strong>Google Labs Flow</strong> (labs.google/fx) — your direct interaction target; Flow's privacy policy applies to prompts and generated content.</li>
+  <li><strong>Firebase / Firestore</strong> (Google Cloud) — stores authentication and approval status; Google's privacy policy applies.</li>
+</ul>
+
+<h2>8. Children</h2>
+<p>FlowRun does not knowingly collect data from children under the age permitted by Google account policy.</p>
+
+<h2>9. Policy Updates</h2>
+<p>We update the "Last updated" date on changes. Material changes are announced via the in-extension notice system.</p>
+
+<h2>10. Contact</h2>
+<ul>
+  <li>GitHub Issues: <a href="https://github.com/smorky850612/flowrun-privacy/issues">https://github.com/smorky850612/flowrun-privacy/issues</a></li>
+  <li>Email: smorky850612@gmail.com</li>
+</ul>
+
 </body>
 </html>
