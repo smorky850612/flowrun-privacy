@@ -33,7 +33,7 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
 <body>
 
 <h1>AuraX Bmax — 개인정보처리방침</h1>
-<p class="sub">최종 수정일: 2026년 5월 12일 &nbsp;|&nbsp; 시행일: 2026년 5월 12일 &nbsp;|&nbsp; 버전: 1.11.13</p>
+<p class="sub">최종 수정일: 2026년 5월 24일 &nbsp;|&nbsp; 시행일: 2026년 5월 24일 &nbsp;|&nbsp; 버전: 2.5.9</p>
 
 <h2>1. 개요</h2>
 <p><strong>AuraX Bmax</strong>는 Gemini AI를 활용한 블로그 콘텐츠 자동 생성, Google Flow 이미지 자동 생성, 네이버 블로그 자동 포스팅 기능을 제공하는 Chrome 확장 프로그램입니다.</p>
@@ -74,6 +74,12 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
     <td>네이버 블로그 식별. AuraX 서버로 전송 안 함.</td>
   </tr>
   <tr>
+    <td><strong>네이버 로그인 비밀번호</strong></td>
+    <td>사용자가 설정 화면에 직접 입력 (선택사항)</td>
+    <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.local (AES-GCM 256bit 암호화)</small></td>
+    <td>네이버 로그인 세션이 만료된 경우에만 자동 로그인 폴백용. 평소 네이버에 로그인된 상태에서는 사용되지 않음. 외부 전송 없음.</td>
+  </tr>
+  <tr>
     <td><strong>네이버 블로그 ID</strong></td>
     <td>사용자가 설정 화면에 직접 입력</td>
     <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.sync</small></td>
@@ -98,6 +104,12 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
     <td>Gemini 프롬프트 커스터마이징. 사용자 기기에만 저장.</td>
   </tr>
   <tr>
+    <td><strong>페르소나 설정</strong><br><small>(필명, 연령대, 직업, 글투, 블로그 컨셉)</small></td>
+    <td>사용자가 직접 입력하거나 AI 자동 생성 (블로그 글 분석)</td>
+    <td><span class="badge local">기기 로컬</span><br><small>chrome.storage.local + sync</small></td>
+    <td>AI 글쓰기 톤 일관성 유지. 외부 전송 없음.</td>
+  </tr>
+  <tr>
     <td><strong>사용자 본인 블로그 게시물 캐시</strong><br><small>(본인이 발행한 글의 제목·본문 텍스트)</small></td>
     <td>사용자가 '블로그 DB 동기화' 버튼 클릭 시 본인 블로그에서 수집</td>
     <td><span class="badge local">기기 로컬</span><br><small>IndexedDB</small></td>
@@ -109,11 +121,17 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
     <td>세션 중 임시 + 사용자 다운로드 폴더 (이미지)</td>
     <td>네이버 블로그 포스팅. AuraX 서버에 저장 안 함.</td>
   </tr>
+  <tr>
+    <td><strong>익명 사용 통계 (텔레메트리)</strong><br><small>이벤트 타입, 시간대(KST), 이미지 간격, 프리셋 키, 에러 타입</small></td>
+    <td>이미지 생성·발행 등 핵심 이벤트 발생 시 자동 전송</td>
+    <td><span class="badge server">AuraX 서버</span><br><small>사용자 ID는 SHA-256 + salt로 해시화하여 익명화</small></td>
+    <td>서비스 안정성 분석 및 시간대별 최적 사용 패턴 도출. 개인 식별 정보 일체 미포함.</td>
+  </tr>
   </tbody>
 </table>
 
 <div class="safe">
-  <strong>중요</strong>: 네이버 로그인 비밀번호는 확장 프로그램이 저장하지 않습니다. 사용자가 네이버 로그인 페이지에서 직접 입력하며, 비밀번호는 네이버 도메인 외부로 전송되지 않습니다.
+  <strong>비밀번호 보호 강화</strong>: v2.5.1부터 네이버 로그인 비밀번호는 AES-GCM 256bit 알고리즘으로 암호화되어 저장됩니다. 복호화 키는 사용자 기기 내부(<code>chrome.storage.local</code>)에만 존재하며 <code>chrome.storage.sync</code>로 동기화되지 않습니다. 평문 비밀번호는 자동 로그인 실행 직전에만 메모리에 일시적으로 존재하며 사용 후 즉시 폐기됩니다. 외부 서버로 전송되지 않습니다.
 </div>
 
 <h2>3. 사용 권한과 필요 이유</h2>
@@ -122,16 +140,18 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
   <li><strong>identity</strong>: Google OAuth 2.0 로그인 처리. 베타 프로그램 승인 사용자 여부 확인. OAuth 스코프는 <code>userinfo.email</code> + <code>userinfo.profile</code> 두 가지로 최소화되어 있습니다 (Drive·Gmail 등 접근 안 함).</li>
   <li><strong>sidePanel</strong>: 확장 프로그램의 사이드패널 UI 표시. 사용자가 아이콘을 클릭한 경우에만 열립니다.</li>
   <li><strong>storage</strong>: <code>chrome.storage.local</code> · <code>chrome.storage.sync</code>에 사용자 설정(API 키, 블로그 ID, 작성 지침 등)을 안전하게 저장. 외부 서버로 전송하지 않습니다.</li>
-  <li><strong>scripting</strong>: host_permissions에 선언된 두 도메인(<code>labs.google</code>, <code>blog.naver.com</code>)에만 콘텐츠 스크립트를 주입. 외부 도메인에는 주입하지 않습니다. 주입되는 모든 코드는 확장 프로그램 패키지에 포함되어 있으며, 원격 코드를 가져오지 않습니다.</li>
+  <li><strong>scripting</strong>: host_permissions에 선언된 도메인(<code>labs.google</code>, <code>blog.naver.com</code>, <code>nid.naver.com</code> 등)에만 콘텐츠 스크립트를 주입. 외부 도메인에는 주입하지 않습니다. 주입되는 모든 코드는 확장 프로그램 패키지에 포함되어 있으며, 원격 코드를 가져오지 않습니다.</li>
   <li><strong>downloads</strong>: Google Flow에서 사용자가 생성을 요청한 이미지를 사용자 기본 다운로드 폴더에 저장. 사용자가 작업을 시작한 경우에만 다운로드되며, 백그라운드·임의 다운로드는 발생하지 않습니다.</li>
   <li><strong>clipboardWrite</strong>: 네이버 SmartEditor 5는 Slate.js + iframe + contenteditable 구조로 일반적인 DOM 속성 할당(<code>element.value</code>·<code>innerHTML</code>)을 통한 콘텐츠 입력을 거부합니다. 사용자가 발행 작업을 시작한 시점에만 생성된 HTML을 임시로 클립보드에 쓰고 네이버 에디터에 붙여넣기 합니다. 클립보드를 읽거나 다른 데이터를 클립보드에 쓰지 않습니다.</li>
   <li><strong>notifications</strong>: 콘텐츠 생성 완료, 이미지 생성 완료, 포스팅 성공, 오류 발생 등 사용자가 시작한 장시간 작업의 진행 상황을 알림으로 표시. 광고·마케팅 알림은 보내지 않습니다.</li>
+  <li><strong>offscreen</strong>: <code>chrome.offscreen.createDocument</code>로 백그라운드 문서를 생성하여 <code>navigator.clipboard.write</code>와 <code>ClipboardItem</code> API로 HTML 형식 콘텐츠를 클립보드에 씁니다. Service Worker는 DOM이나 <code>navigator.clipboard.write</code>에 직접 접근할 수 없어 offscreen document가 유일한 방법입니다. 네이버 SmartEditor에 서식이 포함된 콘텐츠(제목, 본문 색상, 단락 구조)를 정확히 붙여넣기 위해 필수입니다.</li>
+  <li><strong>management</strong>: 사용자가 사이드패널의 🩺(환경 진단) 버튼을 클릭한 경우에만 <code>chrome.management.getAll()</code>을 <strong>읽기 전용</strong>으로 호출합니다. 다른 확장 프로그램의 활성화·비활성화·설치·제거는 절대 수행하지 않습니다. 우리와 동일 도메인(labs.google, blog.naver.com)을 자동화하는 다른 확장 프로그램(예: FlowRun)이 동시에 활성화된 경우 DOM 조작 충돌로 발행 워크플로우가 무음 실패하는 문제가 발생합니다. 충돌 가능성이 있는 확장을 사전 감지하여 사용자에게 명확한 경고를 표시하기 위한 진단 목적에만 사용됩니다. 확장 이름·ID는 외부 서버로 전송되지 않으며, 진단 세션 종료 즉시 메모리에서 폐기됩니다.</li>
   <li><strong>debugger</strong>: 네이버 SmartEditor 5(Slate.js)와 Google Flow는 <code>dispatchEvent</code>로 생성한 합성 이벤트(<code>isTrusted=false</code>)를 거부합니다. 실제 사용자 입력을 시뮬레이션하는 유일한 방법은 Chrome DevTools Protocol(CDP)입니다. 본 확장 프로그램은 <code>chrome.debugger.attach</code>(CDP 1.3)를 사용하며, <strong>아래 4가지 메서드만</strong> 호출합니다:
     <ul>
       <li><code>Input.dispatchKeyEvent</code> — 사용자 키 입력 시뮬레이션</li>
       <li><code>Input.dispatchMouseEvent</code> — 사용자 클릭 시뮬레이션</li>
       <li><code>Page.handleJavaScriptDialog</code> — Google Flow가 작업 중 표시하는 "페이지를 떠나시겠습니까?" 다이얼로그 자동 처리</li>
-      <li><code>Page.navigate</code> — Flow 탭 닫기 시 about:blank로 이동(다음 글마다 깨끗한 프로젝트 시작 보장)</li>
+      <li><code>Page.setInterceptFileChooserDialog</code> — 이미지 업로드 시 OS 파일 다이얼로그 차단</li>
     </ul>
     CDP는 host_permissions에 선언된 탭(<code>labs.google</code>, <code>blog.naver.com</code>)에만 attach되며 작업 완료 즉시 <code>chrome.debugger.detach</code>로 분리됩니다. CDP 사용 중에는 Chrome 브라우저 상단에 "AuraX Bmax이(가) 이 브라우저를 디버깅 중입니다" 배너가 항상 표시되므로 사용자는 디버거 활성 상태를 즉시 인지할 수 있습니다. <strong>본 권한은 네트워크 인터셉트, 외부 도메인 페이지 조작, 데이터 유출, 인증 우회, 광고 표시 등 어떠한 악의적 목적에도 사용되지 않습니다.</strong></li>
 </ul>
@@ -141,11 +161,10 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
 <ul>
   <li><code>https://labs.google/*</code> — Google Flow 이미지 생성 서비스. 사용자가 입력한 프롬프트 전송 및 생성된 이미지 수집</li>
   <li><code>https://flow.google/*</code> — Google Flow 리다이렉트 도메인</li>
-  <li><code>https://blog.naver.com/*</code> — <strong>사용자 본인</strong>의 네이버 블로그. 에디터 붙여넣기 및 본인 글 캐시 수집</li>
-  <li><code>https://section.blog.naver.com/*</code> — 네이버 블로그 카테고리 API (사용자 본인 카테고리 목록 조회)</li>
+  <li><code>https://*.naver.com/*</code> — <strong>사용자 본인</strong>의 네이버 블로그 (blog.naver.com, m.blog.naver.com, section.blog.naver.com, nid.naver.com 포함). 에디터 붙여넣기, 본인 글 캐시 수집, 카테고리 조회, 다국어 다이얼로그 자동 처리</li>
+  <li><code>https://*.naver.net/*</code> — 네이버 정적 리소스 (이미지 업로드 시 필요)</li>
   <li><code>https://*.googleusercontent.com/*</code> — Google CDN. 생성된 이미지 다운로드 경로</li>
   <li><code>https://*.gstatic.com/*</code> — Google Flow 정상 동작에 필요한 Google 정적 리소스</li>
-  <li><code>https://nid.naver.com/*</code> — 네이버 로그인 상태 확인 전용. 사용자가 직접 입력하며 비밀번호는 확장 프로그램이 저장하거나 전송하지 않음</li>
   <li><code>https://generativelanguage.googleapis.com/*</code> — Google Gemini API 엔드포인트. 사용자 본인이 발급받은 API 키로 호출</li>
 </ul>
 
@@ -156,6 +175,7 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
 <p>서비스 기능 수행을 위해 다음 외부 서비스로 데이터가 전송됩니다:</p>
 <ul>
   <li><strong>AuraX 인증 서버 (Cloudflare Workers)</strong>: Google 계정 정보(이름, 이메일)를 전송하여 베타 프로그램 승인 사용자인지 확인합니다. AuraX 자체 서버이며 제3자가 아닙니다.</li>
+  <li><strong>AuraX 통계 서버 (Cloudflare Workers)</strong>: 익명화된 이벤트 데이터(SHA-256 해시 사용자 식별자, 이벤트 타입, 시간대, 이미지 간격 등)가 자동 전송됩니다. 개인 식별 정보는 일체 포함되지 않으며, 서비스 안정성 분석에만 사용됩니다.</li>
   <li><strong>Google Gemini API</strong>: 사용자가 입력한 키워드와 글쓰기 요청이 전송되어 블로그 콘텐츠가 생성됩니다. <a href="https://policies.google.com/privacy" target="_blank">Google 개인정보처리방침</a> 적용.</li>
   <li><strong>Google Flow (labs.google)</strong>: 이미지 생성을 위한 프롬프트가 전송됩니다. <a href="https://policies.google.com/privacy" target="_blank">Google 개인정보처리방침</a> 적용.</li>
   <li><strong>네이버 블로그 (blog.naver.com)</strong>: 사용자가 발행을 명시적으로 실행한 경우에만 생성된 콘텐츠(제목, 본문, 이미지, 태그)가 사용자 본인의 네이버 블로그로 전송됩니다. <a href="https://policy.naver.com/rules/privacy.html" target="_blank">네이버 개인정보처리방침</a> 적용.</li>
@@ -168,6 +188,7 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
 <h2>7. 개인정보 보유 및 이용 기간</h2>
 <ul>
   <li><strong>Google 계정 정보 (AuraX 서버)</strong>: 사용자가 탈퇴 또는 삭제 요청 시 즉시 삭제합니다.</li>
+  <li><strong>익명 텔레메트리 (AuraX 통계 서버)</strong>: 개인 식별이 불가능한 익명 해시 형태로만 저장되며, 90일 후 자동 폐기됩니다.</li>
   <li><strong>기기 로컬 데이터</strong>: 사용자가 Chrome에서 확장 프로그램을 제거하거나 설정 화면에서 직접 삭제하면 즉시 삭제됩니다.</li>
   <li><strong>본인 블로그 캐시 (IndexedDB)</strong>: 확장 프로그램의 '데이터 초기화' 또는 제거 시 즉시 삭제됩니다.</li>
   <li><strong>세션 임시 데이터 (키워드, 생성 콘텐츠)</strong>: 작업 완료 즉시 폐기되며 어디에도 영구 저장되지 않습니다.</li>
@@ -176,6 +197,8 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
 <h2>8. 개인정보 보호 조치</h2>
 <ul>
   <li><strong>전송 암호화</strong>: AuraX 서버와의 모든 통신은 HTTPS(TLS)로 암호화됩니다.</li>
+  <li><strong>비밀번호 암호화 저장</strong>: 네이버 로그인 비밀번호는 Web Crypto API의 AES-GCM 256bit 알고리즘으로 암호화되어 저장됩니다. 복호화 키는 사용자 기기 내부에만 존재합니다.</li>
+  <li><strong>익명 통계</strong>: 사용 통계는 SHA-256 + 솔트 해시로 익명화되어 개인 식별이 불가능합니다.</li>
   <li><strong>로컬 격리</strong>: Gemini API 키, 네이버 계정 정보 등 민감 정보는 사용자 기기의 브라우저 로컬 스토리지에만 저장되며 외부로 전송되지 않습니다.</li>
   <li><strong>API 키 보호</strong>: Gemini API 키는 HTTP 헤더(<code>x-goog-api-key</code>)를 통해 전달되며, URL에 노출되지 않습니다.</li>
   <li><strong>최소 권한 원칙</strong>: 서비스 운영에 반드시 필요한 권한만 요청합니다.</li>
@@ -189,7 +212,7 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
   <li><strong>열람</strong>: AuraX 서버에 저장된 본인 데이터 목록 확인</li>
   <li><strong>삭제</strong>: 계정 탈퇴 및 저장된 모든 데이터 삭제</li>
   <li><strong>수정</strong>: 저장된 정보의 오류 수정</li>
-  <li><strong>처리 정지</strong>: 특정 데이터 처리 중단 요청</li>
+  <li><strong>처리 정지</strong>: 특정 데이터 처리 중단 요청 (텔레메트리 옵트아웃 포함)</li>
   <li><strong>로컬 데이터 직접 삭제</strong>: 설정 화면에서 API 키·네이버 계정 정보를 직접 삭제하거나, 확장 프로그램 제거로 즉시 삭제</li>
 </ul>
 
@@ -199,13 +222,19 @@ code{background:#eef0ff;padding:2px 6px;border-radius:4px;font-size:13px;color:#
 <h2>11. 방침 변경 안내</h2>
 <p>본 방침은 법령 변경 또는 서비스 업데이트에 따라 개정될 수 있습니다. 중요한 변경사항은 이 페이지에 게시하며 버전과 수정일을 함께 표시합니다.</p>
 
-<h2>12. 문의</h2>
+<h2>12. 변경 이력</h2>
+<ul>
+  <li><strong>v2.5.9 (2026-05-24)</strong>: <code>offscreen</code> 권한 추가 (서식 클립보드 쓰기), <code>management</code> 권한 추가 (충돌 확장 진단), 비밀번호 AES-GCM 암호화 저장, 익명 텔레메트리 추가, 호스트 권한 정리 (<code>*.naver.com</code> · <code>*.naver.net</code> 통합)</li>
+  <li><strong>v1.11.13 (2026-05-12)</strong>: 초기 공개 버전</li>
+</ul>
+
+<h2>13. 문의</h2>
 <p>개인정보 관련 문의, 열람·삭제·수정 요청은 아래 경로로 연락해 주세요. 요청 접수 후 7일 이내에 처리합니다.</p>
 <ul>
   <li>이메일: <a href="mailto:smorky850612@gmail.com">smorky850612@gmail.com</a></li>
   <li><a href="https://github.com/smorky850612/flowrun-privacy/issues" target="_blank">GitHub Issues</a></li>
 </ul>
 
-<div class="ft"><p>AuraX Bmax v1.11.13 &nbsp;|&nbsp; © 2026 AuraX &nbsp;|&nbsp; 최종 수정: 2026년 5월 12일</p></div>
+<div class="ft"><p>AuraX Bmax v2.5.9 &nbsp;|&nbsp; © 2026 AuraX &nbsp;|&nbsp; 최종 수정: 2026년 5월 24일</p></div>
 </body>
 </html>
