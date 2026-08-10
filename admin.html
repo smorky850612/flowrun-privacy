@@ -192,17 +192,33 @@ async function getToken(){
   return idToken;
 }
 
+// 한 페이지 조회 (401/403 시 토큰 갱신 후 1회 재시도)
+async function fetchUsersPage(pageToken){
+  const url=FIRESTORE_BASE+"/users?pageSize=300"+(pageToken?"&pageToken="+encodeURIComponent(pageToken):"");
+  let token=await getToken();
+  let res=await fetch(url,{headers:{"Authorization":"Bearer "+token}});
+  if(res.status===401||res.status===403){
+    idToken=await auth.currentUser.getIdToken(true);
+    res=await fetch(url,{headers:{"Authorization":"Bearer "+idToken}});
+  }
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  return res.json();
+}
+
 async function loadUsers(){
   try{
-    let token=await getToken();
-    let res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+token}});
-    if(res.status===401||res.status===403){
-      idToken=await auth.currentUser.getIdToken(true);
-      res=await fetch(FIRESTORE_BASE+"/users?pageSize=500",{headers:{"Authorization":"Bearer "+idToken}});
-    }
-    if(!res.ok)throw new Error("HTTP "+res.status);
-    const data=await res.json();
-    allUsers=parseUsers(data);
+    // Firestore는 pageSize보다 적게 반환할 수 있으므로 nextPageToken을 끝까지 따라간다.
+    // (단일 페이지만 읽으면 사용자 수가 특정 값에서 멈춘 것처럼 보임)
+    const collected=[];
+    let pageToken=null,pages=0;
+    do{
+      const data=await fetchUsersPage(pageToken);
+      collected.push(...parseUsers(data));
+      pageToken=data.nextPageToken||null;
+      pages++;
+    }while(pageToken&&pages<50);
+    if(pageToken)showToast("사용자가 너무 많아 일부만 표시됩니다");
+    allUsers=collected;
     updateStats();renderUsers();
   }catch(e){
     // XSS Fix: textContent 사용 (innerHTML 금지)
