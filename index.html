@@ -78,8 +78,28 @@
   </tr>
 </table>
 
+<h3>1-1. 익명 사용 통계 (개인정보 아님, 설정에서 끌 수 있음)</h3>
 <p>
-  <strong>수집하지 않는 정보:</strong> 비밀번호, 결제 정보, 위치, IP 주소, 웹 방문 기록, 키 입력 로그,
+  오류를 찾아 고치기 위해 <strong>개인을 식별할 수 없는</strong> 실행 통계를 수집합니다.
+  설정 화면의 <em>익명 통계 전송</em> 스위치를 끄면 아무것도 전송되지 않습니다.
+</p>
+<table>
+  <tr><th>항목</th><th>예시</th><th>비고</th></tr>
+  <tr><td>익명 식별 해시</td><td><code>d131c152f4646174</code></td><td>uid를 SHA-256으로 단방향 변환한 값의 앞 16자. 원본 uid·이메일은 전송하지 않으며 해시에서 되돌릴 수 없습니다.</td></tr>
+  <tr><td>확장 버전 / Chrome 주버전</td><td>3.6.0 / 141</td><td>버전별 오류 구분용</td></tr>
+  <tr><td>실행 이벤트</td><td>batch_start, batch_done, batch_error, prompt_fail, preflight_fail</td><td>고정된 목록 외의 값은 서버에서 폐기</td></tr>
+  <tr><td>실행 모드·모델</td><td>image / nb2</td><td>기능별 실패율 파악용</td></tr>
+  <tr><td>프롬프트 <strong>개수</strong>, 성공·실패 건수, 소요 시간</td><td>24개, 성공 22 / 실패 2, 512초</td><td>숫자만. 프롬프트 <strong>내용은 포함되지 않습니다</strong></td></tr>
+  <tr><td>오류 종류(코드)</td><td>debugger_denied, dom_selector, timeout …</td><td>고정된 목록의 코드값</td></tr>
+</table>
+<p>
+  <strong>이 통계에 포함되지 않는 것:</strong> 이메일·이름·프로필 사진·uid 원본, 프롬프트 내용,
+  생성된 이미지·영상, 파일명, 방문한 주소. 전송값에 이메일·전화번호·URL 형태가 섞여 들어오면
+  서버가 저장 전에 제거합니다.
+</p>
+
+<p>
+  <strong>수집하지 않는 정보:</strong> 비밀번호, 결제 정보, 위치, 웹 방문 기록, 키 입력 로그,
   마우스 위치, 다른 사이트의 콘텐츠, Google Flow 외부의 어떤 데이터도 수집하지 않습니다.
 </p>
 
@@ -88,16 +108,19 @@
   <li><strong>사용자 인증 및 승인 관리:</strong> 본 확장은 관리자 승인 기반 베타 서비스입니다. Google 계정으로 로그인한 사용자의 승인 상태(승인/대기)를 확인해 기능 접근을 제어합니다.</li>
   <li><strong>중복 가입 방지 및 사용자 식별:</strong> uid를 키로 하나의 Google 계정당 하나의 사용자 레코드만 생성합니다.</li>
   <li><strong>본 확장 운영자에게 사용자 식별 표시:</strong> 관리자가 승인 요청을 검토할 때 본인 확인용으로 email/displayName 노출.</li>
+  <li><strong>오류 진단 및 안정성 개선(익명 통계에 한함):</strong> 1-1의 익명 통계를 집계해 어떤 버전·환경에서 실패가 잦은지 파악하고 수정합니다. 개인별 사용 내역을 들여다보는 용도가 아닙니다.</li>
 </ul>
 <p>
-  <strong>사용하지 않는 목적:</strong> 광고, 마케팅, 통계 분석, 외부 판매, 신용도 판단, 머신러닝 학습 데이터.
+  <strong>사용하지 않는 목적:</strong> 광고, 마케팅, 외부 판매, 신용도 판단, 머신러닝 학습 데이터,
+  개인별 프로파일링·행동 추적.
 </p>
 
 <h2>3. 저장 위치 및 제3자</h2>
 <ul>
-  <li><strong>Firebase Firestore (Google Cloud)</strong> — 프로젝트 ID: <code>flowrun-kr</code>. Google이 관리하는 인프라이며, Google의 개인정보 처리방침이 함께 적용됩니다.</li>
+  <li><strong>Firebase Firestore (Google Cloud)</strong> — 프로젝트 ID: <code>flowrun-kr</code>. 계정·승인 정보가 저장됩니다. Google이 관리하는 인프라이며, Google의 개인정보 처리방침이 함께 적용됩니다.</li>
+  <li><strong>Cloudflare Workers / D1</strong> — 1-1의 <strong>익명 통계만</strong> 저장됩니다(계정 정보는 저장되지 않습니다). 운영자가 직접 운영하며, 통신 처리 과정에서 Cloudflare가 접속 IP를 인프라 차원에서 처리할 수 있습니다. 본 확장은 IP를 별도로 저장하지 않습니다.</li>
   <li><strong>chrome.storage.local</strong> — 사용자 본인 브라우저 내부에만 저장. 외부 송신 없음.</li>
-  <li><strong>제3자 제공 없음:</strong> 본 확장은 Firebase(Google) 외 어떠한 제3자에게도 사용자 데이터를 판매·전송·공유하지 않습니다.</li>
+  <li><strong>제3자 제공 없음:</strong> 위 인프라 제공자(Google, Cloudflare) 외 어떠한 제3자에게도 사용자 데이터를 판매·전송·공유하지 않습니다.</li>
 </ul>
 
 <h2>4. 보존 및 삭제</h2>
@@ -168,21 +191,36 @@
   <tr><td>Firebase ID/refresh tokens</td><td>Firebase Auth</td><td>On sign-in</td><td>chrome.storage.local (browser only)</td></tr>
 </table>
 
-<p><strong>NOT collected:</strong> passwords, payment info, location, IP address, browsing history, keystroke logs, mouse position, content from other sites, or any data outside Google Flow.</p>
+<h3>1-1. Anonymous usage statistics (not personal data; can be turned off)</h3>
+<p>To find and fix errors, FlowRun collects run statistics that <strong>cannot identify an individual</strong>. Turning off <em>Anonymous statistics</em> in Settings stops all transmission.</p>
+<table>
+  <tr><th>Item</th><th>Example</th><th>Note</th></tr>
+  <tr><td>Anonymous hash</td><td><code>d131c152f4646174</code></td><td>First 16 chars of a one-way SHA-256 of the UID. The raw UID and email are never sent and cannot be recovered from the hash.</td></tr>
+  <tr><td>Extension / Chrome major version</td><td>3.6.0 / 141</td><td>To isolate version-specific failures</td></tr>
+  <tr><td>Run event</td><td>batch_start, batch_done, batch_error, prompt_fail, preflight_fail</td><td>Values outside this fixed list are discarded server-side</td></tr>
+  <tr><td>Mode / model</td><td>image / nb2</td><td>Failure rate per feature</td></tr>
+  <tr><td><strong>Number</strong> of prompts, success/failure counts, duration</td><td>24 prompts, 22 ok / 2 failed, 512s</td><td>Counts only — prompt <strong>content is never included</strong></td></tr>
+  <tr><td>Error code</td><td>debugger_denied, dom_selector, timeout …</td><td>Fixed enum values</td></tr>
+</table>
+<p><strong>Never included in these statistics:</strong> email, name, profile photo, raw UID, prompt content, generated images/videos, file names, or visited URLs. If anything resembling an email, phone number, or URL is submitted, the server strips it before storage.</p>
+
+<p><strong>NOT collected:</strong> passwords, payment info, location, browsing history, keystroke logs, mouse position, content from other sites, or any data outside Google Flow.</p>
 
 <h2>2. Purposes</h2>
 <ul>
   <li><strong>User authentication and approval management:</strong> FlowRun is an admin-approved beta service. We check the approval status (pending/approved) of users signed in with their Google account to gate feature access.</li>
   <li><strong>Duplicate-account prevention and identification:</strong> The UID acts as a primary key — one Google account = one user record.</li>
   <li><strong>Identification for the extension operator:</strong> Email/displayName are shown to the admin during approval review only.</li>
+  <li><strong>Error diagnosis and stability (anonymous statistics only):</strong> Aggregating the statistics in 1-1 to see which versions/environments fail most, and fixing them. Not used to inspect any individual's activity.</li>
 </ul>
-<p><strong>NOT used for:</strong> advertising, marketing, statistical analytics, third-party sale, credit scoring, or ML training.</p>
+<p><strong>NOT used for:</strong> advertising, marketing, third-party sale, credit scoring, ML training, or individual profiling and behavioral tracking.</p>
 
 <h2>3. Storage and Third Parties</h2>
 <ul>
-  <li><strong>Firebase Firestore (Google Cloud)</strong> — project ID <code>flowrun-kr</code>. Managed infrastructure by Google; Google's privacy policy also applies.</li>
+  <li><strong>Firebase Firestore (Google Cloud)</strong> — project ID <code>flowrun-kr</code>. Stores account and approval data. Managed infrastructure by Google; Google's privacy policy also applies.</li>
+  <li><strong>Cloudflare Workers / D1</strong> — stores <strong>only</strong> the anonymous statistics in 1-1 (no account data). Operated by us; Cloudflare may process the connecting IP address at the infrastructure level during transport. FlowRun does not store IP addresses.</li>
   <li><strong>chrome.storage.local</strong> — stored only inside your own browser; not transmitted externally.</li>
-  <li><strong>No third-party sharing:</strong> FlowRun does not sell, share, or transfer user data to any party other than Firebase (Google) infrastructure.</li>
+  <li><strong>No third-party sharing:</strong> FlowRun does not sell, share, or transfer user data to any party other than the infrastructure providers above (Google, Cloudflare).</li>
 </ul>
 
 <h2>4. Retention and Deletion</h2>
