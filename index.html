@@ -23,7 +23,7 @@
 <body>
 
 <h1>FlowRun 개인정보 처리방침</h1>
-<p class="meta">최종 수정일: 2026년 11월 10일 · 적용 버전: v4.0.2 이상</p>
+<p class="meta">최종 수정일: 2026년 11월 12일 · 적용 버전: v4.0.2 이상 (1-1 은 v4.1.0 기준)</p>
 
 <p>
   FlowRun(이하 "본 확장")은 Google Flow(flow.google.com)에서의 AI 이미지·영상 배치 생성 자동화를 제공하는
@@ -78,10 +78,11 @@
   </tr>
 </table>
 
-<h3>1-1. 익명 사용 통계 (개인정보 아님, 설정에서 끌 수 있음)</h3>
+<h3>1-1. 익명 사용 통계 (개인정보 아님)</h3>
 <p>
   오류를 찾아 고치기 위해 <strong>개인을 식별할 수 없는</strong> 실행 통계를 수집합니다.
-  설정 화면의 <em>익명 통계 전송</em> 스위치를 끄면 아무것도 전송되지 않습니다.
+  확장 설정 화면에 "익명 사용 통계가 수집될 수 있습니다"라고 알립니다. v4.1.0부터는 끄는 스위치가 없으며,
+  이전 버전에서 스위치를 꺼 둔 경우에는 그 선택을 계속 지켜 전송하지 않습니다.
 </p>
 <table>
   <tr><th>항목</th><th>예시</th><th>비고</th></tr>
@@ -91,6 +92,8 @@
   <tr><td>실행 모드·모델</td><td>image / nb2</td><td>기능별 실패율 파악용</td></tr>
   <tr><td>프롬프트 <strong>개수</strong>, 성공·실패 건수, 소요 시간</td><td>24개, 성공 22 / 실패 2, 512초</td><td>숫자만. 프롬프트 <strong>내용은 포함되지 않습니다</strong></td></tr>
   <tr><td>오류 종류(코드)</td><td>debugger_denied, dom_selector, timeout …</td><td>고정된 목록의 코드값</td></tr>
+  <tr><td>짧은 오류 안내 문구</td><td>Flow 설정 창이 열리지 않았습니다.</td><td>120자 이내. 원인 구분용이며 프롬프트·주소는 넣지 않고, 서버가 저장 전에 한 번 더 지웁니다.</td></tr>
+  <tr><td>PC 성능 정보 (v4.1.0부터)</td><td>속도 등급 fast, 계산 시험 10ms, CPU 코어 12개, 메모리 약 8GB</td><td>느린 PC에서 더 자주 멈추는지 보려고 작업 시작 때 보냅니다. 크롬이 알려 주는 대략값이며 기기 이름·모델명은 보내지 않습니다.</td></tr>
 </table>
 <p>
   <strong>이 통계에 포함되지 않는 것:</strong> 이메일·이름·프로필 사진·uid 원본, 프롬프트 내용,
@@ -205,7 +208,7 @@
 <hr>
 
 <h1>FlowRun Privacy Policy (English)</h1>
-<p class="meta">Last updated: November 10, 2026 · Applies to: v4.0.2+</p>
+<p class="meta">Last updated: November 12, 2026 · Applies to: v4.0.2+ (section 1-1 reflects v4.1.0)</p>
 
 <p>FlowRun is a Chrome extension that automates AI image and video batch generation on Google Flow (flow.google.com). This policy describes the personal data we process, why, where it is stored, and your rights.</p>
 
@@ -221,8 +224,8 @@
   <tr><td>Firebase ID/refresh tokens</td><td>Firebase Auth</td><td>On sign-in</td><td>chrome.storage.local (browser only)</td></tr>
 </table>
 
-<h3>1-1. Anonymous usage statistics (not personal data; can be turned off)</h3>
-<p>To find and fix errors, FlowRun collects run statistics that <strong>cannot identify an individual</strong>. Turning off <em>Anonymous statistics</em> in Settings stops all transmission.</p>
+<h3>1-1. Anonymous usage statistics (not personal data)</h3>
+<p>To find and fix errors, FlowRun collects run statistics that <strong>cannot identify an individual</strong>. The Settings screen states that anonymous usage statistics may be collected. From v4.1.0 there is no switch to turn this off; if you turned it off in an earlier version, that choice is kept and nothing is sent.</p>
 <table>
   <tr><th>Item</th><th>Example</th><th>Note</th></tr>
   <tr><td>Anonymous hash</td><td><code>d131c152f4646174</code></td><td>First 16 chars of a one-way SHA-256 of the UID. The raw UID and email are never sent and cannot be recovered from the hash.</td></tr>
@@ -231,6 +234,8 @@
   <tr><td>Mode / model</td><td>image / nb2</td><td>Failure rate per feature</td></tr>
   <tr><td><strong>Number</strong> of prompts, success/failure counts, duration</td><td>24 prompts, 22 ok / 2 failed, 512s</td><td>Counts only — prompt <strong>content is never included</strong></td></tr>
   <tr><td>Error code</td><td>debugger_denied, dom_selector, timeout …</td><td>Fixed enum values</td></tr>
+  <tr><td>Short error message</td><td>"Flow settings window did not open."</td><td>Up to 120 chars, to tell causes apart. No prompts or URLs are included, and the server strips them again before storage.</td></tr>
+  <tr><td>PC performance info (from v4.1.0)</td><td>speed tier fast, benchmark 10ms, 12 CPU cores, about 8GB memory</td><td>Sent at batch start to see whether slow PCs fail more often. These are approximate values reported by Chrome; no device name or model is sent.</td></tr>
 </table>
 <p><strong>Never included in these statistics:</strong> email, name, profile photo, raw UID, prompt content, generated images/videos, file names, or visited URLs. If anything resembling an email, phone number, or URL is submitted, the server strips it before storage.</p>
 <p>If failures in these statistics suddenly spike (e.g. several users failing at once), the operator receives an automatic alert (Discord). The alert contains only aggregates such as counts, error types and versions — nothing that identifies a person.</p>
